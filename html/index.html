@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>FPGA tool perf results: index</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+</head>
+<style>
+  
+</style>
+<body>
+  <h1>FPGA Tool Perf results</h1>
+
+  <p>This website contains historical results from FPGA Tool Perf</p><br>
+  <p>
+    Below is alist of all projects used in the tests. Click on a projects to
+    see graphs representing the performance of various configurations used for
+    that project.
+  </p>
+
+  <p>
+    In graph view you can choose the platform from a drop-down menu to see limit
+    the datasets to thos relevant to that platform.<br>
+    You can drag the charts to apn the view and use Shift+drag, Shift+wheel
+    or pinch a touchscreen to zoom in and out.
+  </p>
+
+  <ul>
+    {% for project_name, boards in projects %}
+      <li>
+        <a href="graphs/{{ project_name }}">{{ project_name }}</a>
+        <table border="1">
+          <tr>
+            <th></th>
+            {% for toolchain in toolchains %}
+              <th> {{ toolchain }} </th>
+            {% endfor %}
+          </tr>
+          {% for board in boards %}
+            <tr>
+              <th>
+                {{ board }}
+              </th>
+              {% for toolchain in toolchains %}
+                {% if toolchain in boards[board] %}
+                  <th>X</th>
+                {% else %}
+                  <th> </th>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
