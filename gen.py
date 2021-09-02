@@ -12,8 +12,6 @@ JINJA2_TEMPLATES_DIR = 'html'
 GRAPHVIZ_TEMPLATE_PATH = os.path.join(JINJA2_TEMPLATES_DIR, 'graphviz.html')
 INDEX_TEMPLATE_PATH = os.path.join(JINJA2_TEMPLATES_DIR, 'index.html')
 
-CHARTJS_ZOOM_PATH = 'js/chartjs-plugin-zoom.min.js'
-
 def load_template(path: str):
     with open(path, 'r') as t:
         return jinja2.Template(t.read(), trim_blocks=True, lstrip_blocks=True)
@@ -58,10 +56,6 @@ for project_name in os.listdir(args.data_dir):
 
 index_page = generate_index_html(index_template, results)
 
-chartjs_zoom_script: str
-with open(CHARTJS_ZOOM_PATH, 'r') as f:
-    chartjs_zoom_script = f.read()
-
 if args.out_dir:
     graphs_dir = os.path.join(args.out_dir[0], 'graphs')
     os.makedirs(graphs_dir, exist_ok=True)
@@ -73,24 +67,21 @@ if args.out_dir:
         except Exception as e:
             print(f'Unable to write to the output file {page_path}: {e}')
             exit(-1)
-    
+
     index_path = os.path.join(args.out_dir[0], 'index.html')
     with open(index_path, 'w') as out_file:
         out_file.write(index_page)
-    
+
     js_dir = os.path.join(args.out_dir[0], 'js')
     os.makedirs(js_dir, exist_ok=True)
-    shutil.copy(CHARTJS_ZOOM_PATH,
-                os.path.join(args.out_dir[0], CHARTJS_ZOOM_PATH))
 
 if args.deploy:
     print('Deploying website to Github Pages...')
-    
+
     pages = {}
     for project_name, html in graph_pages.items():
         pages[f'graphs/{project_name}.html'] = html
     pages['index.html'] = index_page
-    pages[CHARTJS_ZOOM_PATH] = chartjs_zoom_script
-    
+
     deploy.github_deploy_pages(args.deploy[0], pages,
                                'auto-deploy', amend=args.amend)

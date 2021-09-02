@@ -5,7 +5,7 @@
   <title>FPGA tool perf results: project {{ project }}</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-  <script src="/perf-tool-history/js/chartjs-plugin-zoom.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.1.1/dist/chartjs-plugin-zoom.min.js"></script>
 </head>
 <style>
   #resource-graphs{
@@ -138,7 +138,7 @@
     ];
     datasetSetsIndices.push("{{ board }}");
   {% endfor %}
-  
+
 
   function selectSets(name) {
     configs = new Set(datasetSets[name]);
@@ -192,7 +192,7 @@
       chart = charts[i];
       chart.getDatasetMeta(idx).hidden = !visibility;
     }
-    
+
     button = document.getElementById("topbar-legend-item-" + idx);
     if (!button)
       return;
