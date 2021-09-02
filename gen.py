@@ -8,13 +8,7 @@ from generate_graph_page import generate_graph_html
 from generate_index_page import generate_index_html
 from project_results import ProjectResults
 
-JINJA2_TEMPLATES_DIR = 'html'
-GRAPHVIZ_TEMPLATE_PATH = os.path.join(JINJA2_TEMPLATES_DIR, 'graphviz.html')
-INDEX_TEMPLATE_PATH = os.path.join(JINJA2_TEMPLATES_DIR, 'index.html')
-
-def load_template(path: str):
-    with open(path, 'r') as t:
-        return jinja2.Template(t.read(), trim_blocks=True, lstrip_blocks=True)
+env = jinja2.Environment(loader=jinja2.FileSystemLoader('html'))
 
 parser = ArgumentParser()
 
@@ -37,8 +31,8 @@ if not os.path.isdir(args.data_dir):
 
 graph_pages = {}
 
-graph_viz_template = load_template(GRAPHVIZ_TEMPLATE_PATH)
-index_template = load_template(INDEX_TEMPLATE_PATH)
+graph_viz_template = env.get_template('graphviz.html')
+index_template = env.get_template('index.html')
 
 results = []
 
