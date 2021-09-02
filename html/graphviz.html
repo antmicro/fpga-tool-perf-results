@@ -6,6 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.1.1/dist/chartjs-plugin-zoom.min.js"></script>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <style>
   #resource-graphs{
@@ -62,7 +63,7 @@
   <div id="topbar">
     <div id="topbar-platforms" onchange="selectSetsFromDropdown()">
       <div>
-        <a href="/perf-tool-history">Index</a>
+        <a href="/perf-tool-history">Go back</a>
       </div>
       <div>
         Board:
@@ -81,6 +82,9 @@
       </div>
       <div>
         <button onclick="hideAll()">Hide all</button>
+      </div>
+      <div class="w3-alight-right">
+        To zoom use Shift+Mouse/Wheel or pinch the touchscreen.
       </div>
     </div>
   </div>

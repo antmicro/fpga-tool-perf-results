@@ -11,25 +11,12 @@
   <body>
 
     <div id="home" class="w3-content">
-      <div id="header" class="w3-container w3-center">
+      <div id="header" class="w3-container w3-center w3-padding">
         <h1>FPGA Tool Perf results</h1>
       </div>
 
-      <div id="overview" class="w3-panel w3-center w3-large">
-        <p>
-          This website contains historical results from FPGA Tool Perf.
-
-          Click on a project to select it. Click on the chart icon to jump to plots.
-
-          Below is alist of all projects used in the tests. Click on a projects to
-          see graphs representing the performance of various configurations used for
-          that project.
-
-          In graph view you can choose the platform from a drop-down menu to see limit
-          the datasets to thos relevant to that platform.
-          You can drag the charts to apn the view and use Shift+drag, Shift+wheel
-          or pinch a touchscreen to zoom in and out.
-        </p>
+      <div id="overview" class="w3-container w3-center">
+        <p>Click on a project to select it, click on its name to jump to the performance graphs.</p>
       </div>
 
       <div class="w3-row">
@@ -37,7 +24,7 @@
           <div id="{{project_name}}" class="w3-col m4 l3">
 
             <button id="{{project_name}}-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('{{project_name}}')">
-              <a href="graphs/{{ project_name }}.html">{{ project_name }}</a>
+              <a href="graphs/{{ project_name }}">{{ project_name }}</a>
               <!-- {{ project_name }} -->
               <!-- <a href="graphs/{{ project_name }}.html"><span class="material-icons">bar_chart</span></a> -->
             </button>
