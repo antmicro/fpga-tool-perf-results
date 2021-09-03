@@ -27,7 +27,7 @@ jobs:
       - name: Fetch data
         run: |
           mkdir -p meta
-          python fetch_meta.py nightly 1138 1239 meta
+          python fetch_meta.py nightly 1138 _ meta
 
       - name: Build webpage
         run: |
