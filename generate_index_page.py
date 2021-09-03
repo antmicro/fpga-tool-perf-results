@@ -1,10 +1,12 @@
+from typing import List
+
 import jinja2
 
 from project_results import ProjectResults
 
 
 def generate_index_html(template: jinja2.Template,
-                        results: 'list[ProjectResults]'):
+                        results: List[ProjectResults]):
     print('Generating index page...')
 
     projects_dict = {}

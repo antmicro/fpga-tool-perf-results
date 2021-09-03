@@ -1,4 +1,6 @@
 import json
+from typing import Dict
+
 from github import Github, InputGitTreeElement
 
 
@@ -42,7 +44,7 @@ def github_repo_branch(config: dict):
 
     return repo_name, branch_name
 
-def github_deploy_pages(deploy_config_path: str, pages: 'dict[str, str]',
+def github_deploy_pages(deploy_config_path: str, pages: Dict[str, str],
                         commit_msg: str, amend=False):
     deploy_config: str
     with open(deploy_config_path, 'r') as cfg_file:

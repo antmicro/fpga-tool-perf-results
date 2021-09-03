@@ -7,6 +7,7 @@ import gzip
 from argparse import ArgumentParser
 from datetime import datetime
 from collections import defaultdict
+from typing import List
 
 parser = ArgumentParser()
 parser.add_argument('builds', type=str)
@@ -66,7 +67,7 @@ def download_meta(path: str, binary: bool = False):
         return resp.text
     return resp.content
 
-def are_results_compound(prefixes: 'list[str]'):
+def are_results_compound(prefixes: List[str]):
     return len(prefixes) == 1
 
 def datetime_from_str(s: str):
@@ -173,7 +174,7 @@ def download_and_split_compound(gcs_compound_path: str):
 
     return projects
 
-def get_test_run_numbers(start: int, end: 'str'):
+def get_test_run_numbers(start: int, end: str):
     url = f'{STORAGE_API_AT}?delimiter=/&prefix={TESTRES_PREFIX}/'
 
     for data in resp_pages(url):

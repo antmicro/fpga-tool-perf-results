@@ -4,6 +4,7 @@ import datetime
 import zlib
 import math
 from collections import defaultdict
+from typing import DefaultDict, Set
 
 import jinja2
 
@@ -35,7 +36,7 @@ def generate_graph_html(template: jinja2.Template,
     print(f'Generating page for project `{project_results.project_name}`...')
 
     all_config_names = set()
-    board_configs: 'defaultdict[str, set[str]]' = defaultdict(lambda: set())
+    board_configs: DefaultDict[str, Set[str]] = defaultdict(lambda: set())
 
     for board, toolchain in project_results.get_all_configs():
         gname = config_name(board, toolchain)
