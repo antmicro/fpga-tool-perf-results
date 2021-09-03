@@ -105,7 +105,11 @@ def merge_results(metas, filter=None):
 
 def get_legacy_metas(gcs_paths: list, test_no: int):
     for path in gcs_paths:
-        meta_json = download_meta(path)
+        try:
+            meta_json = download_meta(path)
+        except requests.exceptions.ConnectionError as e:
+            print(f'ERROR: failed to download {path}: {e}')
+            continue
         meta: dict
         try:
             meta = json.loads(meta_json)
