@@ -17,6 +17,22 @@ class Resources:
     lut: int
     pll: int
 
+    def sanitize(self):
+        # FIXME: currenly oxide uses FF instead of DFF, lacks GLB and has LRAM
+        # https://github.com/SymbiFlow/fpga-tool-perf/pull/342
+        if hasattr(self, 'ff'):
+            print('Sanitizing: FF->DFF')
+            # rename FF to DFF
+            assert not hasattr(self, 'dff')
+            self.dff = self.ff
+            del self.ff
+            # empty GLB
+            if not hasattr(self, 'glb'):
+                self.glb = 0
+            # ignore LRAM
+            if hasattr(self, 'lram'):
+                del self.lram
+
 class Runtime:
     bitstream: 'float | None'
     checkpoint: 'float | None'
@@ -88,6 +104,7 @@ def get_entries(json_data: dict):
             if v is None:
                 v = 'null'
             setattr(resources, k, v)
+        resources.sanitize()
         return resources
 
     wirelength = results.get('wirelength')
