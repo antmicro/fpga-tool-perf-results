@@ -66,9 +66,6 @@ if args.out_dir:
     with open(index_path, 'w') as out_file:
         out_file.write(index_page)
 
-    js_dir = os.path.join(args.out_dir[0], 'js')
-    os.makedirs(js_dir, exist_ok=True)
-
 if args.deploy:
     print('Deploying website to Github Pages...')
 
