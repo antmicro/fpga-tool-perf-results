@@ -8,29 +8,21 @@ from argparse import ArgumentParser
 from datetime import datetime
 from collections import defaultdict
 from typing import List
+from multiprocessing.pool import ThreadPool
 
-parser = ArgumentParser()
-parser.add_argument('builds', type=str)
-parser.add_argument('from_tr', type=int)
-parser.add_argument('to_tr', type=str)
-parser.add_argument('output_dir', type=str)
 
-args = parser.parse_args()
+STORAGE_API_AT = 'https://www.googleapis.com/storage/v1/b/fpga-tool-perf/o'
+TESTRES_PREFIX = 'artifacts/prod/foss-fpga-tools/fpga-tool-perf'
+OLD_TESTRES_DELIMITER = 'meta.json'
+NEW_TESTRES_DELIMITER = 'results-generic-all.json.gz'
+DOWNLOAD_BASE_URL = 'https://storage.googleapis.com/fpga-tool-perf'
 
-STORAGE_API_AT='https://www.googleapis.com/storage/v1/b/fpga-tool-perf/o'
-TESTRES_PREFIX='artifacts/prod/foss-fpga-tools/fpga-tool-perf/' + args.builds
-OLD_TESTRES_DELIMITER='meta.json'
-NEW_TESTRES_DELIMITER='results-generic-all.json.gz'
-DOWNLOAD_BASE_URL='https://storage.googleapis.com/fpga-tool-perf'
 
 # Iterage over all result pages in GCS JSON API.
-def resp_pages(url: str):
-    next_page_token = None
+def iter_result_pages(url: str):
+    req_url = url
     while True:
-        req_url = \
-            url + f'&pageToken={next_page_token}' if next_page_token else url
-        resp = requests.get(url=req_url,
-                            headers={'Content-Type': 'application/json'})
+        resp = requests.get(url=req_url, headers={'Content-Type': 'application/json'})
         data = resp.json()
 
         yield data
@@ -38,21 +30,22 @@ def resp_pages(url: str):
         next_page_token = data.get('nextPageToken')
         if not next_page_token:
             break
+        req_url = f'{url}&pageToken={next_page_token}'
 
-def get_compound_result_file_path(test_run: int):
+def get_compound_result_file_path(test_run: int, builds: str):
     url = f'{STORAGE_API_AT}?delimiter={NEW_TESTRES_DELIMITER}' \
-          f'&prefix={TESTRES_PREFIX}/{test_run}/'
+          f'&prefix={TESTRES_PREFIX}/{builds}/{test_run}/'
 
-    for data in resp_pages(url):
+    for data in iter_result_pages(url):
         prefixes = data.get('prefixes')
         if prefixes:
             return prefixes[0]
 
-def get_result_file_paths(test_run: int):
+def get_result_file_paths(test_run: int, builds: str):
     url = f'{STORAGE_API_AT}?delimiter={OLD_TESTRES_DELIMITER}' \
-          f'&prefix={TESTRES_PREFIX}/{test_run}/'
+          f'&prefix={TESTRES_PREFIX}/{builds}/{test_run}/'
 
-    for data in resp_pages(url):
+    for data in iter_result_pages(url):
         for prefix in data['prefixes']:
             yield prefix
 
@@ -110,7 +103,7 @@ def merge_results(metas, filter=None):
 
     return projects
 
-def get_legacy_metas(gcs_paths: str):
+def get_legacy_metas(gcs_paths: list, test_no: int):
     for path in gcs_paths:
         meta_json = download_meta(path)
         meta: dict
@@ -119,19 +112,17 @@ def get_legacy_metas(gcs_paths: str):
         except json.decoder.JSONDecodeError:
             # Yes this has actually happened once for some reason
             print('ERROR: CAN\'T DECODE THE JSON FROM GCS')
-            with open(f'faulty_json-{test_run_no}.json', 'w') as f:
+            with open(f'faulty_json-{test_no}.json', 'w') as f:
                 f.write(meta_json)
             continue
         yield meta
-    print('Download complete!')
 
-def download_and_merge_legacy(gcs_paths: str):
+def download_and_merge_legacy(gcs_paths: list, test_no: int):
     def accept_generic_all_build_only(meta):
         return meta['build_type'] == 'generic-all' and meta['build'] == '000'
 
-    metas = get_legacy_metas(gcs_paths)
-    merged =  merge_results(metas, filter=accept_generic_all_build_only)
-    print('Merge complete!')
+    metas = get_legacy_metas(gcs_paths, test_no)
+    merged = merge_results(metas, filter=accept_generic_all_build_only)
     return merged
 
 def download_and_split_compound(gcs_compound_path: str):
@@ -174,48 +165,92 @@ def download_and_split_compound(gcs_compound_path: str):
 
     return projects
 
-def get_test_run_numbers(start: int, end: str):
-    url = f'{STORAGE_API_AT}?delimiter=/&prefix={TESTRES_PREFIX}/'
+def get_test_run_numbers(start: int, end: str, builds: str):
+    url = f'{STORAGE_API_AT}?delimiter=/&prefix={TESTRES_PREFIX}/{builds}/'
 
-    for data in resp_pages(url):
+    for data in iter_result_pages(url):
         for prefix in data['prefixes']:
             no = int(prefix.split('/')[-2])
             if no >= start and (end == '_' or no <= int(end)):
                 yield no
 
-
 # -------------------------------------------------------------------- #
 
-if not os.path.isdir(args.output_dir):
-    print('ERROR: Output path is not a directory!')
-    exit(-1)
+def get_download_specs(test_info):
+    test_no = test_info['test_no']
+    builds = test_info['builds']
 
-for test_run_no in get_test_run_numbers(args.from_tr, args.to_tr):
-    print(f'Downloading data for test run no. {test_run_no}')
-
+    print(f'Preparing downloads for test {test_no}')
     gcs_compound_path = None
     gcs_paths = None
     try:
-        gcs_compound_path = get_compound_result_file_path(test_run_no)
+        gcs_compound_path = get_compound_result_file_path(test_no, builds)
         if not gcs_compound_path:
-            gcs_paths = list(get_result_file_paths(test_run_no))
+            gcs_paths = list(get_result_file_paths(test_no, builds))
     except Exception as e:
-        print(f'Failed to fetch patches for test run no. {test_run_no}, '
-              f'cause: {e}')
-        continue
+        print(f'Failed to fetch patches for test run no. {test_no}, cause: {e}')
+        return None
 
-    merged: defaultdict
     if gcs_compound_path:
-        merged = download_and_split_compound(gcs_compound_path)
+        return dict(test_no=test_no, paths=gcs_compound_path, compound=True)
     else:
-        merged = download_and_merge_legacy(gcs_paths)
+        return dict(test_no=test_no, paths=gcs_paths, compound=False)
+
+
+def download_from_specs(specs):
+    test_no = specs['test_no']
+    if specs['compound']:
+        merged = download_and_split_compound(specs['paths'])
+    else:
+        merged = download_and_merge_legacy(specs['paths'], test_no)
 
     for project_name, merged_data in merged.items():
-        project_dir = os.path.join(args.output_dir, project_name)
-        out_filename = os.path.join(project_dir, f'meta-{test_run_no}.json')
+        project_dir = os.path.join(specs['output_dir'], project_name)
+        out_filename = os.path.join(project_dir, f'meta-{test_no}.json')
         os.makedirs(project_dir, exist_ok=True)
         merged_json = json.dumps(merged_data, indent=4)
         with open(out_filename, 'w') as f:
             f.write(merged_json)
 
-print('DONE')
+    print(f'Downloaded test no. {test_no}')
+
+def main():
+    parser = ArgumentParser()
+    parser.add_argument('builds', type=str, help='Builds type (e.g. `nightly`)')
+    parser.add_argument('from_tr', type=int, help='First test run number')
+    parser.add_argument('to_tr', type=str, help='Last test run number (use `_` for "latest")')
+    parser.add_argument('output_dir', type=str, help='Output directory for downloaded data')
+    parser.add_argument('--pool-size', type=int, default=8, help='Size of thread pool')
+    args = parser.parse_args()
+
+    if not os.path.isdir(args.output_dir):
+        print('ERROR: Output path is not a directory!')
+        exit(-1)
+
+
+    print(f'Using {args.pool_size} parallel threads.')
+    pool = ThreadPool(args.pool_size)
+    test_numbers = list(get_test_run_numbers(args.from_tr, args.to_tr, args.builds))
+
+    print('Preparing downloads ...', flush=True)
+    tests = [dict(test_no=test_no, builds=args.builds) for test_no in test_numbers]
+    download_specs = pool.map(get_download_specs, tests)
+    download_specs = list(filter(None, download_specs))  # remove None resulting from errors
+
+    for specs in download_specs:
+        specs['output_dir'] = args.output_dir
+
+    url_count = 0
+    for specs in download_specs:
+        if not specs['compound']:
+            url_count += len(specs['paths'])
+        else:
+            url_count += 1
+
+    print(f'Downloading {url_count} URLs ...', flush=True)
+    results = pool.map(download_from_specs, download_specs)
+
+    print('Done')
+
+if __name__ == "__main__":
+    main()
