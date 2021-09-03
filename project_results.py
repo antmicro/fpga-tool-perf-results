@@ -1,8 +1,10 @@
-from testentry import *
-from datetime import datetime
-from collections import defaultdict
 import os
 import json
+from datetime import datetime
+from collections import defaultdict
+
+from testentry import *
+
 
 def config_name(board: str, toolchain: str):
     return f'{board}-{toolchain}'
@@ -19,7 +21,7 @@ class ProjectResults:
         self.project_name = project_name
         self.test_dates = []
         self.entries = defaultdict(lambda: defaultdict(lambda: []))
-        
+
         configs = defaultdict(lambda: set())
         datas = []
 
@@ -44,7 +46,7 @@ class ProjectResults:
                         continue
 
                     datas.append(data)
-        
+
         # Create test entries
         for data in sorted(datas, key=lambda d: datetime_from_str(d['date'])):
             self.test_dates.append(datetime_from_str(data['date']))
@@ -65,7 +67,7 @@ class ProjectResults:
             for board, toolchains in configs_to_handle.items():
                 for toolchain in toolchains:
                     self.entries[board][toolchain].append(None)
-    
+
     def get_all_configs(self):
         for board, toolchains in self.entries.items():
             for toolchain in toolchains.keys():

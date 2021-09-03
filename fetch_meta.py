@@ -1,12 +1,12 @@
 # Fetch test results from Google Storage
 
-import requests
-from argparse import ArgumentParser
 import os
 import json
+import requests
+import gzip
+from argparse import ArgumentParser
 from datetime import datetime
 from collections import defaultdict
-import gzip
 
 parser = ArgumentParser()
 parser.add_argument('builds', type=str)
@@ -41,7 +41,7 @@ def resp_pages(url: str):
 def get_compound_result_file_path(test_run: int):
     url = f'{STORAGE_API_AT}?delimiter={NEW_TESTRES_DELIMITER}' \
           f'&prefix={TESTRES_PREFIX}/{test_run}/'
-    
+
     for data in resp_pages(url):
         prefixes = data.get('prefixes')
         if prefixes:
@@ -50,7 +50,7 @@ def get_compound_result_file_path(test_run: int):
 def get_result_file_paths(test_run: int):
     url = f'{STORAGE_API_AT}?delimiter={OLD_TESTRES_DELIMITER}' \
           f'&prefix={TESTRES_PREFIX}/{test_run}/'
-    
+
     for data in resp_pages(url):
         for prefix in data['prefixes']:
             yield prefix
@@ -61,7 +61,7 @@ def download_meta(path: str, binary: bool = False):
     req_url = f'{DOWNLOAD_BASE_URL}/{path}'
     resp = requests.get(url=req_url,
                         headers={"Content-Type": "application/json"})
-    
+
     if not binary:
         return resp.text
     return resp.content
@@ -101,7 +101,7 @@ def merge_results(metas, filter=None):
 
         except KeyError as e:
             print(f'Skipping a meta file because of {e}')
-    
+
     for project in projects.values():
         project['date'] = \
             f'{earliest_dt.year}-{earliest_dt.month}-{earliest_dt.day}T' \
@@ -127,7 +127,7 @@ def get_legacy_metas(gcs_paths: str):
 def download_and_merge_legacy(gcs_paths: str):
     def accept_generic_all_build_only(meta):
         return meta['build_type'] == 'generic-all' and meta['build'] == '000'
-    
+
     metas = get_legacy_metas(gcs_paths)
     merged =  merge_results(metas, filter=accept_generic_all_build_only)
     print('Merge complete!')
@@ -137,7 +137,7 @@ def download_and_split_compound(gcs_compound_path: str):
     meta_json_gz = download_meta(gcs_compound_path, binary=True)
     meta_json = gzip.decompress(meta_json_gz).decode()
     meta = json.loads(meta_json)
-    
+
     projects = defaultdict(lambda: {
         'results': defaultdict(lambda: [])
     })
@@ -167,10 +167,10 @@ def download_and_split_compound(gcs_compound_path: str):
         project_res['max_freq'].append(max_freq)
         project_res['device'].append(device)
         project_res['wirelength'].append(wirelength)
-    
+
     for project in projects.values():
         project['date'] = meta['date']
-    
+
     return projects
 
 def get_test_run_numbers(start: int, end: 'str'):
@@ -202,7 +202,7 @@ for test_run_no in get_test_run_numbers(args.from_tr, args.to_tr):
         print(f'Failed to fetch patches for test run no. {test_run_no}, '
               f'cause: {e}')
         continue
-    
+
     merged: defaultdict
     if gcs_compound_path:
         merged = download_and_split_compound(gcs_compound_path)

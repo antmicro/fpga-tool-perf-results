@@ -1,5 +1,7 @@
 import jinja2
+
 from project_results import ProjectResults
+
 
 def generate_index_html(template: jinja2.Template,
                         results: 'list[ProjectResults]'):
@@ -15,9 +17,9 @@ def generate_index_html(template: jinja2.Template,
                 board_toolchains.append(toolchain)
                 all_toolchains.add(toolchain)
             boards[board] = board_toolchains
-        
+
         projects_dict[project_results.project_name] = boards
-    
+
     projects_list = sorted(list(projects_dict.items()), key=lambda t: t[0])
     toolchain_list = sorted(list(all_toolchains))
 

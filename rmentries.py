@@ -1,8 +1,8 @@
 """ Remove a range of test run entries """
 
-from argparse import ArgumentParser
 import os
 import re
+from argparse import ArgumentParser
 
 parser = ArgumentParser()
 parser.add_argument('meta_dir', type=str)
@@ -19,7 +19,7 @@ for subdir in os.listdir(args.meta_dir):
     subdir = os.path.join(args.meta_dir, subdir)
     if not os.path.isdir(subdir):
         continue
-    
+
     for fpath in os.listdir(subdir):
         m = re.match('meta-([0-9]*)\\.json', fpath)
         if m:

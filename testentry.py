@@ -1,5 +1,5 @@
-from collections import defaultdict
 import re
+from collections import defaultdict
 
 class Clk:
     actual: float
@@ -73,14 +73,14 @@ def get_entries(json_data: dict):
         else:
             raise Exception('Wrong type for clock definition')
         return clks
-    
+
     def make_runtime(runtimedef: dict):
         runtime = Runtime()
         for k, v in runtimedef.items():
             k = k.replace(' ', '_')
             setattr(runtime, k, v)
         return runtime
-    
+
     def make_resources(resourcesdef: dict):
         resources = Resources()
         for k, v in resourcesdef.items():
@@ -89,7 +89,7 @@ def get_entries(json_data: dict):
                 v = 'null'
             setattr(resources, k, v)
         return resources
-    
+
     wirelength = results.get('wirelength')
     if not wirelength:
         wirelength = null_generator()
@@ -106,7 +106,7 @@ def get_entries(json_data: dict):
     for board, toolchain_dict, max_freq, max_mem_use, resources, runtime, \
             wirelength in zipped:
         toolchain, _ = next(iter(toolchain_dict.items()))
-        
+
         # Some platforms are cursed and the tests return just a single float
         # instead of a dict
         clk_config = max_freq

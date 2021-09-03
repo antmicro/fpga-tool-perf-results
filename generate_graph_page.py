@@ -1,10 +1,11 @@
-import jinja2
 import json
 import os
 import datetime
-from collections import defaultdict
 import zlib
 import math
+from collections import defaultdict
+
+import jinja2
 
 from color import hsl_to_rgb, rgb_to_hex
 from jinja2_templates import gen_datasets_def
@@ -32,7 +33,7 @@ def gen_config_color(config_name: str):
 def generate_graph_html(template: jinja2.Template,
                         project_results: ProjectResults):
     print(f'Generating page for project `{project_results.project_name}`...')
-        
+
     all_config_names = set()
     board_configs: 'defaultdict[str, set[str]]' = defaultdict(lambda: set())
 
@@ -49,7 +50,7 @@ def generate_graph_html(template: jinja2.Template,
     # - d_dict: a target dictionray for datasets of certain measurements for
     #           different configs
     # - fmt: a string used for formatting the items within generated lists
-    # - selector: a function used to retreive a sample from an entry 
+    # - selector: a function used to retreive a sample from an entry
     def generate_datasets(*ds_defs):
         for board, toolchains in project_results.entries.items():
             for toolchain, entries in toolchains.items():
@@ -84,7 +85,7 @@ def generate_graph_html(template: jinja2.Template,
                     continue
                 for clkname in entry.maxfreq.keys():
                     clocks.add(clkname)
-    
+
     for clkname in clocks:
         freq_multidatasets[clkname] = {}
         def selector(e: testentry.TestEntry):
