@@ -34,9 +34,15 @@ jobs:
           python gen.py meta -o build
           touch build/.nojekyll
 
-      - name: Deploy gh-pages
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          folder: build
+      - name: Deploy to GH pages
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master'  }}
+        run: |
+          cd build
+          git init
+          cp ../.git/config ./.git/config
+          git add .
+          git config --local user.email "push@gha"
+          git config --local user.name "GHA"
+          git commit -am "update ${{ github.sha  }}"
+          git push -u origin +HEAD:gh-pages
+          rm -rf .git

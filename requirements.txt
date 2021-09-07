@@ -1,2 +1,2 @@
 jinja2
-pygithub
+yapf==0.24.0
