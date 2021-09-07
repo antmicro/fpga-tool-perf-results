@@ -1,12 +1,14 @@
 import re
 from collections import defaultdict
 
+
 class Clk:
     actual: float
     hold_violation: float
     met: bool
     requested: float
     setup_violation: float
+
 
 class Resources:
     bram: int
@@ -33,6 +35,7 @@ class Resources:
             if hasattr(self, 'lram'):
                 del self.lram
 
+
 class Runtime:
     bitstream: 'float | None'
     checkpoint: 'float | None'
@@ -50,6 +53,7 @@ class Runtime:
     synthesis: 'float | None'
     total: 'float | None'
 
+
 class TestEntry:
     maxfreq: 'dict[str, Clk]'
     maximum_memory_use: float
@@ -57,15 +61,19 @@ class TestEntry:
     runtime: Runtime
     wirelength: 'int | None'
 
+
 def get_configs(json_data: dict):
-    zipped = zip(json_data['results']['board'], json_data['results']['toolchain'])
+    zipped = zip(json_data['results']['board'],
+                 json_data['results']['toolchain'])
     for board, toolchain_dict in zipped:
         toolchain, _ = next(iter(toolchain_dict.items()))
         yield board, toolchain
 
+
 def null_generator():
     while True:
         yield None
+
 
 def get_entries(json_data: dict):
     results = json_data['results']
@@ -111,15 +119,9 @@ def get_entries(json_data: dict):
     if not wirelength:
         wirelength = null_generator()
 
-    zipped = zip(
-        results['board'],
-        results['toolchain'],
-        results['max_freq'],
-        results['maximum_memory_use'],
-        results['resources'],
-        results['runtime'],
-        wirelength
-    )
+    zipped = zip(results['board'], results['toolchain'], results['max_freq'],
+                 results['maximum_memory_use'], results['resources'],
+                 results['runtime'], wirelength)
     for board, toolchain_dict, max_freq, max_mem_use, resources, runtime, \
             wirelength in zipped:
         toolchain, _ = next(iter(toolchain_dict.items()))

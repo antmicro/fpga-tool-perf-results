@@ -9,8 +9,10 @@ from testentry import *
 def config_name(board: str, toolchain: str):
     return f'{board}-{toolchain}'
 
+
 def datetime_from_str(s: str):
     return datetime.strptime(s, '%Y-%m-%dT%H:%M:%S')
+
 
 class ProjectResults:
     project_name: str

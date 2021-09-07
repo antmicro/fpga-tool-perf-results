@@ -13,14 +13,18 @@ from jinja2_templates import gen_datasets_def
 import testentry
 from project_results import ProjectResults
 
+
 def datetime_from_str(s: str):
     return datetime.datetime.strptime(s, '%Y-%m-%dT%H:%M:%S')
 
+
 def fmt_list(l: list, fmt: str):
-        return ', '.join(fmt.format(e) for e in l)
+    return ', '.join(fmt.format(e) for e in l)
+
 
 def config_name(board: str, toolchain: str):
     return f'{board}-{toolchain}'
+
 
 # Generate an HSL color unique for a given config
 def gen_config_color(config_name: str):
@@ -30,6 +34,7 @@ def gen_config_color(config_name: str):
     l = float((hash & 0xff0000) >> 16) / 255.0 * 0.5 + 0.25
 
     return min(h, math.pi * 2.0), min(s, 1.0), min(l, 1.0)
+
 
 def generate_graph_html(template: jinja2.Template,
                         project_results: ProjectResults):
@@ -64,7 +69,7 @@ def generate_graph_html(template: jinja2.Template,
                         'data': fmt_list([selector(e) if e else 'null' \
                                         for e in entries], fmt),
                         'color': color_hex
-                }
+                    }
 
     runtime_datasets = {}
     freq_multidatasets = {}
@@ -89,24 +94,24 @@ def generate_graph_html(template: jinja2.Template,
 
     for clkname in clocks:
         freq_multidatasets[clkname] = {}
+
         def selector(e: testentry.TestEntry):
             nonlocal clkname
             clk = e.maxfreq.get(clkname)
             return clk.actual if clk else 'null'
+
         generate_datasets((freq_multidatasets[clkname], '{}', selector))
 
-    generate_datasets(
-        (runtime_datasets, '{}', lambda e: e.runtime.total),
-        (lut_datasets, '{}', lambda e: e.resources.lut),
-        (dff_datasets, '{}', lambda e: e.resources.dff),
-        (carry_datasets, '{}', lambda e: e.resources.carry),
-        (iob_datasets, '{}', lambda e: e.resources.iob),
-        (bram_datasets, '{}', lambda e: e.resources.bram),
-        (pll_datasets, '{}', lambda e: e.resources.pll),
-        (glb_datasets, '{}', lambda e: e.resources.glb),
-        (mem_use_datasets, '{}', lambda e: e.maximum_memory_use),
-        (wirelength_datasets, '{}', lambda e: e.wirelength)
-    )
+    generate_datasets((runtime_datasets, '{}', lambda e: e.runtime.total),
+                      (lut_datasets, '{}', lambda e: e.resources.lut),
+                      (dff_datasets, '{}', lambda e: e.resources.dff),
+                      (carry_datasets, '{}', lambda e: e.resources.carry),
+                      (iob_datasets, '{}', lambda e: e.resources.iob),
+                      (bram_datasets, '{}', lambda e: e.resources.bram),
+                      (pll_datasets, '{}', lambda e: e.resources.pll),
+                      (glb_datasets, '{}', lambda e: e.resources.glb),
+                      (mem_use_datasets, '{}', lambda e: e.maximum_memory_use),
+                      (wirelength_datasets, '{}', lambda e: e.wirelength))
 
     rdata = template.render(
         labels=fmt_list(labels, '"{}"'),
@@ -122,7 +127,6 @@ def generate_graph_html(template: jinja2.Template,
         mem_use_datasets=gen_datasets_def(mem_use_datasets),
         wirelength_datasets=gen_datasets_def(wirelength_datasets),
         project=project_results.project_name,
-        board_configs=board_configs
-    )
+        board_configs=board_configs)
 
     return rdata

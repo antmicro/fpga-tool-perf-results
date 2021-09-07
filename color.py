@@ -1,5 +1,6 @@
 import math
 
+
 def hsl_to_rgb(h: float, s: float, l: float):
     r, g, b = 0.0, 0.0, 0.0
     c = 1.0 - abs(2.0 * l - 1.0) * s
@@ -40,6 +41,7 @@ def hsl_to_rgb(h: float, s: float, l: float):
     b += m
 
     return min(max(r, 0.0), 1.0), min(max(g, 0.0), 1.0), min(max(b, 0.0), 1.0)
+
 
 def rgb_to_hex(r, g, b):
     return '#' + \

@@ -3,76 +3,68 @@ from argparse import ArgumentParser
 import os
 import shutil
 
-import deploy
 from generate_graph_page import generate_graph_html
 from generate_index_page import generate_index_html
 from project_results import ProjectResults
 
-env = jinja2.Environment(loader=jinja2.FileSystemLoader('html'))
 
-parser = ArgumentParser()
+def main():
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader('html'))
 
-parser.add_argument('data_dir', type=str,
-                    help='Directory containing json data files')
-parser.add_argument('-o', '--out_dir', nargs=1, type=str,
-                    help='Save outputs in a given directory')
-parser.add_argument('-d', '--deploy', nargs=1, type=str,
-                    help='Deploy the website to Github Pages using the '
-                         'configuration at given path')
-parser.add_argument('-a', '--amend', action='store_true',
-                    help='Replace the last commit on github when using `--deploy` '
-                         'instead of pushing a new one on top of the branch.')
+    parser = ArgumentParser()
 
-args = parser.parse_args()
+    parser.add_argument(
+        'data_dir', type=str, help='Directory containing json data files')
+    parser.add_argument(
+        '-o',
+        '--out_dir',
+        nargs=1,
+        type=str,
+        help='Save outputs in a given directory')
 
-if not os.path.isdir(args.data_dir):
-    print('Path needs to be a path to a directory')
-    exit(-1)
+    args = parser.parse_args()
 
-graph_pages = {}
+    if not os.path.isdir(args.data_dir):
+        print('Path needs to be a path to a directory')
+        exit(-1)
 
-graph_viz_template = env.get_template('graphviz.html')
-index_template = env.get_template('index.html')
+    graph_pages = {}
 
-results = []
+    graph_viz_template = env.get_template('graphviz.html')
+    index_template = env.get_template('index.html')
 
-for project_name in os.listdir(args.data_dir):
-    project_dir = os.path.join(args.data_dir, project_name)
-    if not os.path.isdir(project_dir):
-        print(f'Skipping `{project_dir}` because it''s not a directory.')
-        continue
+    results = []
 
-    project_results = ProjectResults(project_name, project_dir)
-    results.append(project_results)
+    for project_name in os.listdir(args.data_dir):
+        project_dir = os.path.join(args.data_dir, project_name)
+        if not os.path.isdir(project_dir):
+            print(f'Skipping `{project_dir}` because it' 's not a directory.')
+            continue
 
-    graph_pages[project_name] = \
-        generate_graph_html(graph_viz_template, project_results)
+        project_results = ProjectResults(project_name, project_dir)
+        results.append(project_results)
 
-index_page = generate_index_html(index_template, results)
+        graph_pages[project_name] = \
+            generate_graph_html(graph_viz_template, project_results)
 
-if args.out_dir:
-    graphs_dir = os.path.join(args.out_dir[0], 'graphs')
-    os.makedirs(graphs_dir, exist_ok=True)
-    for project_name, html in graph_pages.items():
-        page_path = os.path.join(graphs_dir, f'{project_name}.html')
-        try:
-            with open(page_path, 'w') as out_file:
-                out_file.write(html)
-        except Exception as e:
-            print(f'Unable to write to the output file {page_path}: {e}')
-            exit(-1)
+    index_page = generate_index_html(index_template, results)
 
-    index_path = os.path.join(args.out_dir[0], 'index.html')
-    with open(index_path, 'w') as out_file:
-        out_file.write(index_page)
+    if args.out_dir:
+        graphs_dir = os.path.join(args.out_dir[0], 'graphs')
+        os.makedirs(graphs_dir, exist_ok=True)
+        for project_name, html in graph_pages.items():
+            page_path = os.path.join(graphs_dir, f'{project_name}.html')
+            try:
+                with open(page_path, 'w') as out_file:
+                    out_file.write(html)
+            except Exception as e:
+                print(f'Unable to write to the output file {page_path}: {e}')
+                exit(-1)
 
-if args.deploy:
-    print('Deploying website to Github Pages...')
+        index_path = os.path.join(args.out_dir[0], 'index.html')
+        with open(index_path, 'w') as out_file:
+            out_file.write(index_page)
 
-    pages = {}
-    for project_name, html in graph_pages.items():
-        pages[f'graphs/{project_name}.html'] = html
-    pages['index.html'] = index_page
 
-    deploy.github_deploy_pages(args.deploy[0], pages,
-                               'auto-deploy', amend=args.amend)
+if __name__ == "__main__":
+    main()
