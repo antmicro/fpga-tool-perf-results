@@ -7,5 +7,6 @@
 #
 # SPDX-License-Identifier: ISC
 
+source env/bin/activate
 yapf -i $(find . -maxdepth 1 -name "*py") setup.py
 test $(git status --porcelain | wc -l) -eq 0 || { git diff; false;  }

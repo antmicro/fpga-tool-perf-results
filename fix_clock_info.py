@@ -8,7 +8,6 @@
 # https://opensource.org/licenses/ISC
 #
 # SPDX-License-Identifier: ISC
-
 """ Unify clock names in legacy data """
 
 from argparse import ArgumentParser
