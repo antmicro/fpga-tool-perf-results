@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>FPGA tool perf results: project rsdecoder</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.1.1/dist/chartjs-plugin-zoom.min.js"></script>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<style>
+  #resource-graphs{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  #resource-graphs div {
+    width: 31vw;
+    max-width: 31vw;
+    max-height: 50vh;
+    margin: 1vh 1vw 1vw 1vh;
+  }
+  #topbar {
+    background-color: lightgrey;
+  }
+  #topbar-platforms {
+    display: flex;
+    flex-direction: row;
+    padding-top: 0.5em;
+  }
+  #topbar-platforms div {
+    margin: 0.1em 0.5em 0.5em 0.5em;
+  }
+  #topbar-legend {
+    max-height: 4em;
+    background-color: lightgrey;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+  }
+  #topbar-legend-flex {
+    display: flex;
+    flex-direction: row;
+  }
+  .topbar-legend-item {
+    margin: 0.1em 0.5em 0.5em 0.5em;
+  }
+  .topbar-legend-item div p {
+    margin-top: 0.5em;
+    margin-bottom: 0.1em;
+    font-size: 0.7em;
+    cursor: pointer;
+  }
+  .topbar-legend-color-indicator {
+    height: 0.5em;
+  }
+  .crosslined {
+    text-decoration: line-through;
+  }
+</style>
+
+<body>
+  <div id="topbar">
+    <div id="topbar-platforms" onchange="selectSetsFromDropdown()">
+      <div>
+        <a href="../index.html">Go back</a>
+      </div>
+      <div>
+        Board:
+      </div>
+      <div style="margin-left: 0em;">
+        <select id="topbar-platforms-dropdown">
+          
+            <option value="0">
+              chandalar
+            </option>
+          
+            <option value="1">
+              quickfeather
+            </option>
+          
+            <option value="2">
+              (all configs)
+            </option>
+          
+        </select>
+      </div>
+      <div>
+        <button onclick="selectSetsFromDropdown()">Unhide all</button>
+      </div>
+      <div>
+        <button onclick="hideAll()">Hide all</button>
+      </div>
+      <div class="w3-alight-right">
+        To zoom use Shift+Mouse/Wheel or pinch the touchscreen.
+      </div>
+    </div>
+  </div>
+  <div id="topbar-legend">
+    <div id="topbar-legend-flex">
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <canvas id="runtime-chart" width="300" height="150"></canvas>
+  
+    <canvas id="frequency-chart-clk", width="300" height="150">
+    </canvas>
+  
+  <div id="resource-graphs">
+    <div>
+      <canvas id="LUT-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="DFF-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="CARRY-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="IOB-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="BRAM-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="PLL-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="GLB-chart"></canvas>
+    </div>
+  </div>
+  <canvas id="wirelength-chart" width="300" height="150"></canvas>
+  <canvas id="memory-usage-chart" width="300" height="150"></canvas>
+
+  <script>
+
+  let charts = [];
+  let labels = [ "2021-08-20 03:35:53", "2021-08-20 08:58:18", "2021-08-20 16:45:27", "2021-08-20 21:30:49", "2021-08-21 03:18:45", "2021-08-21 08:53:14", "2021-08-21 16:26:04", "2021-08-21 21:35:29", "2021-08-22 05:12:05", "2021-08-22 11:06:20", "2021-08-22 15:29:39", "2021-08-22 20:09:11", "2021-08-23 02:49:12", "2021-08-23 09:42:26", "2021-08-23 16:32:13", "2021-08-23 21:14:14", "2021-08-24 04:23:19", "2021-08-24 11:22:15", "2021-08-24 14:44:32", "2021-08-24 23:05:39", "2021-08-25 03:30:39", "2021-08-25 10:35:38", "2021-08-25 16:23:34", "2021-08-25 21:31:26", "2021-08-26 04:07:38", "2021-08-26 12:39:27", "2021-08-26 16:17:41", "2021-08-26 22:57:53", "2021-08-27 05:28:13", "2021-08-27 09:19:57", "2021-08-27 16:31:26", "2021-08-27 22:07:39", "2021-08-28 04:55:43", "2021-08-28 11:31:12", "2021-08-28 18:09:16", "2021-08-28 19:36:58", "2021-08-29 05:22:47", "2021-08-29 10:40:46", "2021-08-29 18:40:54", "2021-08-29 21:40:24", "2021-08-30 04:16:29", "2021-08-30 11:31:11", "2021-08-30 15:28:26", "2021-08-30 23:03:23", "2021-08-31 05:17:23", "2021-08-31 10:30:17", "2021-08-31 15:34:47", "2021-08-31 22:04:56", "2021-09-01 04:20:20", "2021-09-01 10:22:47", "2021-09-01 15:20:19", "2021-09-01 20:15:38", "2021-09-02 03:16:18", "2021-09-02 10:53:53" ];
+
+  let firstChart = null;
+
+  let datasetSets = {};
+  let datasetSetsIndices = [];
+  
+    datasetSets["chandalar"] = [
+      
+        "chandalar-quicklogic",
+      
+    ];
+    datasetSetsIndices.push("chandalar");
+  
+    datasetSets["quickfeather"] = [
+      
+        "quickfeather-quicklogic",
+      
+    ];
+    datasetSetsIndices.push("quickfeather");
+  
+    datasetSets["(all configs)"] = [
+      
+        "quickfeather-quicklogic",
+      
+        "chandalar-quicklogic",
+      
+    ];
+    datasetSetsIndices.push("(all configs)");
+  
+
+
+  function selectSets(name) {
+    configs = new Set(datasetSets[name]);
+    makeLegend(configs);
+
+    ds_cnt = firstChart.data.datasets.length;
+    for (let i = 0; i < ds_cnt; i++) {
+      dataset = firstChart.data.datasets[i];
+      if (!configs.has(dataset.label)) {
+        setDatasetVisible(i, false);
+        continue;
+      }
+      setDatasetVisible(i, true);
+    }
+
+    updateCharts();
+  }
+
+  function createLegendEntry(idx, name, color) {
+    return "<div class=\"topbar-legend-item\"><div><p id=\"topbar-legend-item-" +
+           idx + "\"onClick=\"toggleDataset(" + idx + ")\">" + name + "</p>" +
+           "</div><div style=\"background-color: " + color + ";\" " +
+           "class=\"topbar-legend-color-indicator\"></div></div>";
+  }
+
+  function selectSetsFromDropdown() {
+    dropdown = document.getElementById("topbar-platforms-dropdown");
+    selectSets(datasetSetsIndices[dropdown.selectedIndex]);
+  }
+
+  function makeLegend(configs) {
+    html_code = ""
+    ds_cnt = firstChart.data.datasets.length;
+    for (let i = 0; i < ds_cnt; i++) {
+      dataset = firstChart.data.datasets[i];
+      if (!configs.has(dataset.label))
+        continue;
+      html_code += createLegendEntry(i, dataset.label, dataset.borderColor);
+    }
+
+    document.getElementById("topbar-legend-flex").innerHTML = html_code;
+  }
+
+  function updateCharts() {
+    for (let i = 0; i < charts.length; i++)
+      charts[i].update();
+  }
+
+  function setDatasetVisible(idx, visibility) {
+    for (let i = 0; i < charts.length; i++) {
+      chart = charts[i];
+      chart.getDatasetMeta(idx).hidden = !visibility;
+    }
+
+    button = document.getElementById("topbar-legend-item-" + idx);
+    if (!button)
+      return;
+    if (visibility)
+      button.className = "";
+    else
+      button.className = "crosslined";
+  }
+
+  function onLegendClicked(event, legendItem, legend) {
+    idx = legendItem.datasetIndex
+    visibility = legendItem.hidden
+    setDatasetVisible(idx, visibility)
+  }
+
+  function toggleDataset(idx) {
+    setDatasetVisible(idx, charts[0].getDatasetMeta(idx).hidden);
+    updateCharts();
+  }
+
+  function hideAll() {
+    for (let i = 0; i < charts.length; i++) {
+      chart = charts[i];
+      for (let j = 0; j < chart.data.datasets.length; j++) {
+        setDatasetVisible(i, false);
+      }
+    }
+
+    updateCharts();
+  }
+
+  function newLineChart(canvas_name, title, unitstr, labels, datasets, legend) {
+    return new Chart(document.getElementById(canvas_name), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      spanGaps: true,
+      options: {
+        animation: false,
+        normailzed: true,
+        plugins: {
+          title: {
+            display: true,
+            text: title
+          },
+          legend: {
+            display: legend,
+            onClick: onLegendClicked
+          },
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+                modifierKey: "shift"
+              },
+              drag: {
+                enabled: true,
+                modifierKey: "shift"
+              },
+              pinch: {
+                enabled: true
+              },
+              mode: "x"
+            },
+            pan: {
+              enabled: true,
+              mode: "x"
+            }
+          }
+        },
+        scales: {
+          y: {
+            ticks: {
+              callback: function(v, idx, vx) {
+                return v + unitstr;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  /* Select "(all configs)" on start */
+  for(let i = 0; i < datasetSetsIndices.length; i++) {
+    if (datasetSetsIndices[i] == "(all configs)") {
+      dropdown = document.getElementById("topbar-platforms-dropdown");
+      dropdown.selectedIndex = i;
+      break;
+    }
+  }
+
+  firstChart = newLineChart(
+    "runtime-chart",
+    "rsdecoder: total runtime",
+    "s",
+     labels,
+    
+    [
+            {
+                data: [ 760.243, 800.67, 1497.629, 811.449, 855.314, 739.515, 1296.878, 1172.649, 989.173, 863.304, 916.044, 878.86, 880.987, 1143.621, 835.696, 898.351, 793.598, 1917.521, 775.213, 1269.505, 1115.417, 785.486, 905.842, 944.523, 885.385, 1024.23, 912.61, 850.163, 961.59, 914.239, 797.285, 1191.379, 989.951, 765.652, 954.455, 920.33, 1028.369, 929.943, 1204.106, 1023.779, 1294.934, 836.739, 758.834, 1198.253, 1185.7, 1081.275, 1009.121, 784.361, 1184.513, 857.877, 972.445, 828.777, 751.386, 740.208 ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ 873.0, 1021.865, 1070.111, 1115.683, 981.607, 920.225, 1721.869, 874.418, 923.783, 1074.334, 1035.723, 867.344, 1083.483, 1167.672, 833.266, 818.463, 786.95, 1212.405, 766.214, 1452.559, 776.79, 960.643, 881.787, 968.427, 988.691, 950.353, 863.641, 758.337, 786.317, 897.123, 856.818, 830.065, 938.794, 947.375, 1236.524, 754.114, 999.752, 896.056, 852.09, 1479.53, 926.48, 815.587, 1032.262, 888.585, 1077.779, 1083.837, 803.725, 983.335, 1239.277, 1355.811, 873.825, 808.903, 1226.874, 946.983 ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  );
+
+  charts.push(firstChart);
+  makeLegend(new Set(datasetSets["(all configs)"]));
+
+  
+    charts.push(newLineChart(
+      "frequency-chart-clk",
+      "rsdecoder: clk actual frequency",
+      "MHz",
+      labels,
+      [
+        
+          {
+            data: [ 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577 ],
+            label: "chandalar-quicklogic",
+            borderColor: "#00e70b",
+            fill: false
+          },
+        
+          {
+            data: [ 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577, 9.577 ],
+            label: "quickfeather-quicklogic",
+            borderColor: "#3cffb6",
+            fill: false
+          },
+        
+      ],
+      false
+    ));
+  
+
+  charts.push(newLineChart(
+    "LUT-chart",
+    "rsdecoder: total LUT count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "DFF-chart",
+    "rsdecoder: total DFF count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "CARRY-chart",
+    "rsdecoder: total CARRY count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "IOB-chart",
+    "rsdecoder: total IOB count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "BRAM-chart",
+    "rsdecoder: total BRAM count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "PLL-chart",
+    "rsdecoder: total PLL count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "GLB-chart",
+    "rsdecoder: total GLB count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+
+  charts.push(newLineChart(
+    "wirelength-chart",
+    "rsdecoder: wirelength",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+
+  charts.push(newLineChart(
+    "memory-usage-chart",
+    "rsdecoder: maximum memory usage",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "chandalar-quicklogic" ,
+                borderColor: "#00e70b",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "quickfeather-quicklogic" ,
+                borderColor: "#3cffb6",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+
+  </script>
+</body>
+</html>

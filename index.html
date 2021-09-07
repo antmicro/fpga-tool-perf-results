@@ -1,0 +1,4684 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FPGA tool perf results: index</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  </head>
+  <body>
+
+    <div id="home" class="w3-content">
+      <div id="header" class="w3-container w3-center w3-padding">
+        <h1>FPGA Tool Perf results</h1>
+      </div>
+
+      <div id="overview" class="w3-container w3-center">
+        <p>Click on a project to select it, click on its name to jump to the performance graphs.</p>
+      </div>
+
+      <div class="w3-row">
+        
+          <div id="axi-lite-reg" class="w3-col m4 l3">
+
+            <button id="axi-lite-reg-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('axi-lite-reg')">
+              <a href="graphs/axi-lite-reg.html">axi-lite-reg</a>
+              <!-- axi-lite-reg -->
+              <!-- <a href="graphs/axi-lite-reg.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="baselitex" class="w3-col m4 l3">
+
+            <button id="baselitex-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('baselitex')">
+              <a href="graphs/baselitex.html">baselitex</a>
+              <!-- baselitex -->
+              <!-- <a href="graphs/baselitex.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="baselitex-nexys-video" class="w3-col m4 l3">
+
+            <button id="baselitex-nexys-video-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('baselitex-nexys-video')">
+              <a href="graphs/baselitex-nexys-video.html">baselitex-nexys-video</a>
+              <!-- baselitex-nexys-video -->
+              <!-- <a href="graphs/baselitex-nexys-video.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="blinky" class="w3-col m4 l3">
+
+            <button id="blinky-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('blinky')">
+              <a href="graphs/blinky.html">blinky</a>
+              <!-- blinky -->
+              <!-- <a href="graphs/blinky.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="bram-n1" class="w3-col m4 l3">
+
+            <button id="bram-n1-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('bram-n1')">
+              <a href="graphs/bram-n1.html">bram-n1</a>
+              <!-- bram-n1 -->
+              <!-- <a href="graphs/bram-n1.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="bram-n2" class="w3-col m4 l3">
+
+            <button id="bram-n2-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('bram-n2')">
+              <a href="graphs/bram-n2.html">bram-n2</a>
+              <!-- bram-n2 -->
+              <!-- <a href="graphs/bram-n2.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="bram-n3" class="w3-col m4 l3">
+
+            <button id="bram-n3-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('bram-n3')">
+              <a href="graphs/bram-n3.html">bram-n3</a>
+              <!-- bram-n3 -->
+              <!-- <a href="graphs/bram-n3.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="daisho-usb3" class="w3-col m4 l3">
+
+            <button id="daisho-usb3-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('daisho-usb3')">
+              <a href="graphs/daisho-usb3.html">daisho-usb3</a>
+              <!-- daisho-usb3 -->
+              <!-- <a href="graphs/daisho-usb3.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="dram-test-64x1d" class="w3-col m4 l3">
+
+            <button id="dram-test-64x1d-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('dram-test-64x1d')">
+              <a href="graphs/dram-test-64x1d.html">dram-test-64x1d</a>
+              <!-- dram-test-64x1d -->
+              <!-- <a href="graphs/dram-test-64x1d.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="hamsternz-displayport" class="w3-col m4 l3">
+
+            <button id="hamsternz-displayport-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('hamsternz-displayport')">
+              <a href="graphs/hamsternz-displayport.html">hamsternz-displayport</a>
+              <!-- hamsternz-displayport -->
+              <!-- <a href="graphs/hamsternz-displayport.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="hamsternz-hdmi" class="w3-col m4 l3">
+
+            <button id="hamsternz-hdmi-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('hamsternz-hdmi')">
+              <a href="graphs/hamsternz-hdmi.html">hamsternz-hdmi</a>
+              <!-- hamsternz-hdmi -->
+              <!-- <a href="graphs/hamsternz-hdmi.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="ibex" class="w3-col m4 l3">
+
+            <button id="ibex-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('ibex')">
+              <a href="graphs/ibex.html">ibex</a>
+              <!-- ibex -->
+              <!-- <a href="graphs/ibex.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="iir" class="w3-col m4 l3">
+
+            <button id="iir-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('iir')">
+              <a href="graphs/iir.html">iir</a>
+              <!-- iir -->
+              <!-- <a href="graphs/iir.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="jpeg-qnr" class="w3-col m4 l3">
+
+            <button id="jpeg-qnr-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('jpeg-qnr')">
+              <a href="graphs/jpeg-qnr.html">jpeg-qnr</a>
+              <!-- jpeg-qnr -->
+              <!-- <a href="graphs/jpeg-qnr.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="murax" class="w3-col m4 l3">
+
+            <button id="murax-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('murax')">
+              <a href="graphs/murax.html">murax</a>
+              <!-- murax -->
+              <!-- <a href="graphs/murax.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="oneblink" class="w3-col m4 l3">
+
+            <button id="oneblink-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('oneblink')">
+              <a href="graphs/oneblink.html">oneblink</a>
+              <!-- oneblink -->
+              <!-- <a href="graphs/oneblink.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="picorv32" class="w3-col m4 l3">
+
+            <button id="picorv32-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('picorv32')">
+              <a href="graphs/picorv32.html">picorv32</a>
+              <!-- picorv32 -->
+              <!-- <a href="graphs/picorv32.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="picosoc" class="w3-col m4 l3">
+
+            <button id="picosoc-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('picosoc')">
+              <a href="graphs/picosoc.html">picosoc</a>
+              <!-- picosoc -->
+              <!-- <a href="graphs/picosoc.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="picosoc-simpleuart" class="w3-col m4 l3">
+
+            <button id="picosoc-simpleuart-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('picosoc-simpleuart')">
+              <a href="graphs/picosoc-simpleuart.html">picosoc-simpleuart</a>
+              <!-- picosoc-simpleuart -->
+              <!-- <a href="graphs/picosoc-simpleuart.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="picosoc-spimemio" class="w3-col m4 l3">
+
+            <button id="picosoc-spimemio-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('picosoc-spimemio')">
+              <a href="graphs/picosoc-spimemio.html">picosoc-spimemio</a>
+              <!-- picosoc-spimemio -->
+              <!-- <a href="graphs/picosoc-spimemio.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="rsdecoder" class="w3-col m4 l3">
+
+            <button id="rsdecoder-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('rsdecoder')">
+              <a href="graphs/rsdecoder.html">rsdecoder</a>
+              <!-- rsdecoder -->
+              <!-- <a href="graphs/rsdecoder.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="up5k-nes" class="w3-col m4 l3">
+
+            <button id="up5k-nes-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('up5k-nes')">
+              <a href="graphs/up5k-nes.html">up5k-nes</a>
+              <!-- up5k-nes -->
+              <!-- <a href="graphs/up5k-nes.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="vexriscv" class="w3-col m4 l3">
+
+            <button id="vexriscv-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('vexriscv')">
+              <a href="graphs/vexriscv.html">vexriscv</a>
+              <!-- vexriscv -->
+              <!-- <a href="graphs/vexriscv.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="vexriscv-smp" class="w3-col m4 l3">
+
+            <button id="vexriscv-smp-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('vexriscv-smp')">
+              <a href="graphs/vexriscv-smp.html">vexriscv-smp</a>
+              <!-- vexriscv-smp -->
+              <!-- <a href="graphs/vexriscv-smp.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+          <div id="zynq-ps7-counter" class="w3-col m4 l3">
+
+            <button id="zynq-ps7-counter-button" class="project-button w3-button w3-light-gray w3-block w3-center" onclick="selectTable('zynq-ps7-counter')">
+              <a href="graphs/zynq-ps7-counter.html">zynq-ps7-counter</a>
+              <!-- zynq-ps7-counter -->
+              <!-- <a href="graphs/zynq-ps7-counter.html"><span class="material-icons">bar_chart</span></a> -->
+            </button>
+
+          </div>
+        
+      </div>
+
+      <div>
+        
+          <div id="axi-lite-reg-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> zybo </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="baselitex-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="baselitex-nexys-video-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="blinky-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="bram-n1-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="bram-n2-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="bram-n3-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="daisho-usb3-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="dram-test-64x1d-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="hamsternz-displayport-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="hamsternz-hdmi-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="ibex-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="iir-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> chandalar </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> quickfeather </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="jpeg-qnr-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> quickfeather </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> chandalar </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="murax-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="oneblink-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> zybo </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> quickfeather </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> icebreaker </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> lifcl-40 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="picorv32-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> zybo </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> icebreaker </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="picosoc-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="picosoc-simpleuart-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> zybo </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> icebreaker </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> quickfeather </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="picosoc-spimemio-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> zybo </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> icebreaker </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> quickfeather </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="rsdecoder-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> chandalar </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> quickfeather </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="up5k-nes-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> icebreaker </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="vexriscv-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> zybo </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> nexys-video </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> basys3 </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="vexriscv-smp-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> arty-a100t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+    <tr>
+      <th> arty-a35t </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+          <div id="zynq-ps7-counter-table" class="project-table w3-container w3-hide w3-padding-16">
+            <table class="w3-table-all w3-responsive ">
+  <tr class="w3-gray">
+    <th class="w3-center w3-border"> Toolchain  <br></br> Board</th>
+    
+      <th class="w3-center w3-border"> nextpnr-fpga-interchange </th>
+    
+      <th class="w3-center w3-border"> nextpnr-ice40 </th>
+    
+      <th class="w3-center w3-border"> nextpnr-nexus </th>
+    
+      <th class="w3-center w3-border"> nextpnr-xilinx </th>
+    
+      <th class="w3-center w3-border"> quicklogic </th>
+    
+      <th class="w3-center w3-border"> vivado </th>
+    
+      <th class="w3-center w3-border"> vpr </th>
+    
+      <th class="w3-center w3-border"> vpr-fasm2bels </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado </th>
+    
+      <th class="w3-center w3-border"> yosys-vivado-uhdm </th>
+    
+  </tr>
+  
+    <tr>
+      <th> zybo </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+        <th class="w3-center w3-border">
+          
+            X
+          
+        </th>
+      
+    </tr>
+  
+</table>
+          </div>
+        
+      </div>
+    </div>
+  </body>
+
+<script charset="utf-8">
+
+// sets visibility of an element with the w3-hide class by appending/removing w3-show class
+function setVisibility(elem, on) {
+  if (on) {
+    if (elem.className.indexOf("w3-show") == -1) {
+      elem.className += " w3-show";
+    }
+  } else {
+    elem.className = elem.className.replace(" w3-show", "");
+  }
+}
+
+function toggleVisibility(id) {
+  var elem = document.getElementById(id);
+  setVisibility(elem, elem.className.indexOf("w3-show") == -1);
+}
+
+function selectTable(project_name) {
+  var table_id = project_name + "-table";
+  var button_id = project_name + "-button";
+
+  var tables = document.getElementsByClassName("project-table");
+  for (var i = tables.length - 1; i >= 0; i--) {
+    setVisibility(tables[i], tables[i].id == table_id);
+  }
+
+  var buttons = document.getElementsByClassName("project-button");
+  for (var i = buttons.length - 1; i >= 0; i--) {
+    if (buttons[i].id == button_id) {
+      buttons[i].className = buttons[i].className.replace(" w3-gray", "");
+      buttons[i].className = buttons[i].className.replace(" w3-light-gray", "");
+      buttons[i].className += " w3-gray";
+    } else {
+      buttons[i].className = buttons[i].className.replace(" w3-gray", "");
+      buttons[i].className = buttons[i].className.replace(" w3-light-gray", "");
+      buttons[i].className += " w3-light-gray";
+    }
+  }
+}
+
+// select first table on start
+selectTable("axi-lite-reg");
+
+</script>
+</html>

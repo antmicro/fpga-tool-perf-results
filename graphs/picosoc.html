@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>FPGA tool perf results: project picosoc</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.1.1/dist/chartjs-plugin-zoom.min.js"></script>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<style>
+  #resource-graphs{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  #resource-graphs div {
+    width: 31vw;
+    max-width: 31vw;
+    max-height: 50vh;
+    margin: 1vh 1vw 1vw 1vh;
+  }
+  #topbar {
+    background-color: lightgrey;
+  }
+  #topbar-platforms {
+    display: flex;
+    flex-direction: row;
+    padding-top: 0.5em;
+  }
+  #topbar-platforms div {
+    margin: 0.1em 0.5em 0.5em 0.5em;
+  }
+  #topbar-legend {
+    max-height: 4em;
+    background-color: lightgrey;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+  }
+  #topbar-legend-flex {
+    display: flex;
+    flex-direction: row;
+  }
+  .topbar-legend-item {
+    margin: 0.1em 0.5em 0.5em 0.5em;
+  }
+  .topbar-legend-item div p {
+    margin-top: 0.5em;
+    margin-bottom: 0.1em;
+    font-size: 0.7em;
+    cursor: pointer;
+  }
+  .topbar-legend-color-indicator {
+    height: 0.5em;
+  }
+  .crosslined {
+    text-decoration: line-through;
+  }
+</style>
+
+<body>
+  <div id="topbar">
+    <div id="topbar-platforms" onchange="selectSetsFromDropdown()">
+      <div>
+        <a href="../index.html">Go back</a>
+      </div>
+      <div>
+        Board:
+      </div>
+      <div style="margin-left: 0em;">
+        <select id="topbar-platforms-dropdown">
+          
+            <option value="0">
+              basys3
+            </option>
+          
+            <option value="1">
+              (all configs)
+            </option>
+          
+        </select>
+      </div>
+      <div>
+        <button onclick="selectSetsFromDropdown()">Unhide all</button>
+      </div>
+      <div>
+        <button onclick="hideAll()">Hide all</button>
+      </div>
+      <div class="w3-alight-right">
+        To zoom use Shift+Mouse/Wheel or pinch the touchscreen.
+      </div>
+    </div>
+  </div>
+  <div id="topbar-legend">
+    <div id="topbar-legend-flex">
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <canvas id="runtime-chart" width="300" height="150"></canvas>
+  
+    <canvas id="frequency-chart-clk", width="300" height="150">
+    </canvas>
+  
+  <div id="resource-graphs">
+    <div>
+      <canvas id="LUT-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="DFF-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="CARRY-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="IOB-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="BRAM-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="PLL-chart"></canvas>
+    </div>
+    <div>
+      <canvas id="GLB-chart"></canvas>
+    </div>
+  </div>
+  <canvas id="wirelength-chart" width="300" height="150"></canvas>
+  <canvas id="memory-usage-chart" width="300" height="150"></canvas>
+
+  <script>
+
+  let charts = [];
+  let labels = [ "2021-08-20 03:35:53", "2021-08-20 08:58:18", "2021-08-20 16:45:27", "2021-08-20 21:30:49", "2021-08-21 03:18:45", "2021-08-21 08:53:14", "2021-08-21 16:26:04", "2021-08-21 21:35:29", "2021-08-22 05:12:05", "2021-08-22 11:06:20", "2021-08-22 15:29:39", "2021-08-22 20:09:11", "2021-08-23 02:49:12", "2021-08-23 09:42:26", "2021-08-23 16:32:13", "2021-08-23 21:14:14", "2021-08-24 04:23:19", "2021-08-24 11:22:15", "2021-08-24 14:44:32", "2021-08-24 23:05:39", "2021-08-25 03:30:39", "2021-08-25 10:35:38", "2021-08-25 16:23:34", "2021-08-25 21:31:26", "2021-08-26 04:07:38", "2021-08-26 12:39:27", "2021-08-26 16:17:41", "2021-08-26 22:57:53", "2021-08-27 05:28:13", "2021-08-27 09:19:57", "2021-08-27 16:31:26", "2021-08-27 22:07:39", "2021-08-28 04:55:43", "2021-08-28 11:31:12", "2021-08-28 18:09:16", "2021-08-28 19:36:58", "2021-08-29 05:22:47", "2021-08-29 10:40:46", "2021-08-29 18:40:54", "2021-08-29 21:40:24", "2021-08-30 04:16:29", "2021-08-30 11:31:11", "2021-08-30 15:28:26", "2021-08-30 23:03:23", "2021-08-31 05:17:23", "2021-08-31 10:30:17", "2021-08-31 15:34:47", "2021-08-31 22:04:56", "2021-09-01 04:20:20", "2021-09-01 10:22:47", "2021-09-01 15:20:19", "2021-09-01 20:15:38", "2021-09-02 03:16:18", "2021-09-02 10:53:53", "2021-09-02 20:57:25", "2021-09-03 04:27:49", "2021-09-03 10:04:29", "2021-09-03 16:34:46", "2021-09-04 00:41:47", "2021-09-04 04:06:21", "2021-09-04 08:47:45", "2021-09-04 17:43:10", "2021-09-05 00:08:21", "2021-09-05 05:01:57", "2021-09-05 08:07:44", "2021-09-05 18:32:15", "2021-09-05 23:27:34", "2021-09-06 02:44:38", "2021-09-06 11:40:57", "2021-09-06 17:52:15", "2021-09-06 23:44:14", "2021-09-07 04:42:02", "2021-09-07 10:49:46" ];
+
+  let firstChart = null;
+
+  let datasetSets = {};
+  let datasetSetsIndices = [];
+  
+    datasetSets["basys3"] = [
+      
+        "basys3-yosys-vivado",
+      
+        "basys3-vpr",
+      
+        "basys3-yosys-vivado-uhdm",
+      
+        "basys3-nextpnr-xilinx",
+      
+        "basys3-vpr-fasm2bels",
+      
+        "basys3-vivado",
+      
+    ];
+    datasetSetsIndices.push("basys3");
+  
+    datasetSets["(all configs)"] = [
+      
+        "basys3-yosys-vivado",
+      
+        "basys3-vpr",
+      
+        "basys3-yosys-vivado-uhdm",
+      
+        "basys3-nextpnr-xilinx",
+      
+        "basys3-vpr-fasm2bels",
+      
+        "basys3-vivado",
+      
+    ];
+    datasetSetsIndices.push("(all configs)");
+  
+
+
+  function selectSets(name) {
+    configs = new Set(datasetSets[name]);
+    makeLegend(configs);
+
+    ds_cnt = firstChart.data.datasets.length;
+    for (let i = 0; i < ds_cnt; i++) {
+      dataset = firstChart.data.datasets[i];
+      if (!configs.has(dataset.label)) {
+        setDatasetVisible(i, false);
+        continue;
+      }
+      setDatasetVisible(i, true);
+    }
+
+    updateCharts();
+  }
+
+  function createLegendEntry(idx, name, color) {
+    return "<div class=\"topbar-legend-item\"><div><p id=\"topbar-legend-item-" +
+           idx + "\"onClick=\"toggleDataset(" + idx + ")\">" + name + "</p>" +
+           "</div><div style=\"background-color: " + color + ";\" " +
+           "class=\"topbar-legend-color-indicator\"></div></div>";
+  }
+
+  function selectSetsFromDropdown() {
+    dropdown = document.getElementById("topbar-platforms-dropdown");
+    selectSets(datasetSetsIndices[dropdown.selectedIndex]);
+  }
+
+  function makeLegend(configs) {
+    html_code = ""
+    ds_cnt = firstChart.data.datasets.length;
+    for (let i = 0; i < ds_cnt; i++) {
+      dataset = firstChart.data.datasets[i];
+      if (!configs.has(dataset.label))
+        continue;
+      html_code += createLegendEntry(i, dataset.label, dataset.borderColor);
+    }
+
+    document.getElementById("topbar-legend-flex").innerHTML = html_code;
+  }
+
+  function updateCharts() {
+    for (let i = 0; i < charts.length; i++)
+      charts[i].update();
+  }
+
+  function setDatasetVisible(idx, visibility) {
+    for (let i = 0; i < charts.length; i++) {
+      chart = charts[i];
+      chart.getDatasetMeta(idx).hidden = !visibility;
+    }
+
+    button = document.getElementById("topbar-legend-item-" + idx);
+    if (!button)
+      return;
+    if (visibility)
+      button.className = "";
+    else
+      button.className = "crosslined";
+  }
+
+  function onLegendClicked(event, legendItem, legend) {
+    idx = legendItem.datasetIndex
+    visibility = legendItem.hidden
+    setDatasetVisible(idx, visibility)
+  }
+
+  function toggleDataset(idx) {
+    setDatasetVisible(idx, charts[0].getDatasetMeta(idx).hidden);
+    updateCharts();
+  }
+
+  function hideAll() {
+    for (let i = 0; i < charts.length; i++) {
+      chart = charts[i];
+      for (let j = 0; j < chart.data.datasets.length; j++) {
+        setDatasetVisible(i, false);
+      }
+    }
+
+    updateCharts();
+  }
+
+  function newLineChart(canvas_name, title, unitstr, labels, datasets, legend) {
+    return new Chart(document.getElementById(canvas_name), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      spanGaps: true,
+      options: {
+        animation: false,
+        normailzed: true,
+        plugins: {
+          title: {
+            display: true,
+            text: title
+          },
+          legend: {
+            display: legend,
+            onClick: onLegendClicked
+          },
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+                modifierKey: "shift"
+              },
+              drag: {
+                enabled: true,
+                modifierKey: "shift"
+              },
+              pinch: {
+                enabled: true
+              },
+              mode: "x"
+            },
+            pan: {
+              enabled: true,
+              mode: "x"
+            }
+          }
+        },
+        scales: {
+          y: {
+            ticks: {
+              callback: function(v, idx, vx) {
+                return v + unitstr;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  /* Select "(all configs)" on start */
+  for(let i = 0; i < datasetSetsIndices.length; i++) {
+    if (datasetSetsIndices[i] == "(all configs)") {
+      dropdown = document.getElementById("topbar-platforms-dropdown");
+      dropdown.selectedIndex = i;
+      break;
+    }
+  }
+
+  firstChart = newLineChart(
+    "runtime-chart",
+    "picosoc: total runtime",
+    "s",
+     labels,
+    
+    [
+            {
+                data: [ 284.033, 333.83, 492.591, 406.757, 364.234, 260.925, 537.873, 494.289, 378.262, 370.308, 517.312, 302.093, 407.993, 497.878, 504.871, 263.336, 417.962, 443.059, 307.869, 314.769, 349.214, 312.054, 300.823, 410.947, 299.786, 432.277, 601.043, 539.215, 336.286, 397.38, 392.788, 444.355, 315.706, 279.428, 506.957, 258.85, 365.926, 308.798, 344.063, 291.442, 302.898, 319.415, 518.322, 275.438, 294.063, 409.06, 340.122, 318.724, 401.231, 306.043, 310.96, 246.35, 292.356, 279.583, 346.03, 300.661, 402.272, 361.064, 365.909, 265.607, 297.352, 429.124, 314.747, 250.463, 246.596, 384.728, 326.025, 294.253, 369.823, 375.937, 303.465, 252.039, 262.142 ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 449.611, 392.205, 604.512, 327.704, 395.144, 405.405, 426.652, 395.731, 677.45, 394.988, 391.824, 331.662, 343.995, 422.954, 829.249, 343.451, 364.608, 369.158, 313.285, 481.662, 590.154, 418.063, 391.398, 346.548, 331.0, 424.945, 369.321, 325.528, 453.438, 684.875, 326.078, 354.985, 411.246, 375.627, 356.224, 345.45, 461.756, 332.932, 502.476, 338.059, 355.734, 505.481, 316.43, 337.574, 485.583, 400.401, 404.166, 373.544, 356.24, 598.574, 460.203, 325.382, 333.379, 475.996, 390.429, 322.849, 399.599, 474.687, 438.083, 332.579, 337.168, 342.863, 386.974, 338.219, 350.195, 374.121, 355.619, 358.167, 440.045, 364.046, 366.692, 324.305, 330.532 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ 215.02, 131.32, 312.85, 368.51, 193.92, 133.9, 323.18, 214.25, 318.98, 314.92, 325.72, 251.92, 206.63, 299.32, 262.4, 140.11, 202.06, 276.2, 210.66, 262.02, 292.61, 201.61, 148.26, 242.77, 195.52, 381.75, 257.82, 231.04, 228.62, 231.73, 308.46, 246.85, 220.78, 139.92, 227.96, 137.93, 218.26, 214.56, 310.28, 274.9, 299.59, 187.34, 233.65, 245.6, 272.96, 228.51, 309.1, 222.46, 213.02, 218.72, 200.1, 144.5, 216.16, 223.43, 234.57, 199.72, 201.47, 327.33, 257.82, 137.82, 194.56, 292.13, 304.41, 146.57, 134.16, 316.93, 273.58, 219.23, 324.01, 226.82, 190.65, 128.36, 152.87 ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ 201.469, 123.804, 246.164, 144.967, 134.761, 123.856, 169.142, 136.952, 161.683, 135.25, 229.882, 123.308, 130.506, 177.963, 120.095, 123.786, 164.386, 221.735, 204.544, 171.359, 172.931, 179.177, 133.21, 232.58, 154.685, 377.796, 129.175, 167.629, 124.61, 131.586, 218.742, 204.652, 200.752, 135.483, 182.923, 123.291, 150.774, 125.841, 182.305, 136.423, 142.101, 173.427, 204.596, 128.525, 132.985, 205.3, 222.644, 262.931, 199.681, 148.048, 136.694, 134.343, 142.15, 134.422, 180.737, 126.459, 124.144, 235.549, 192.698, 133.924, 212.912, 197.602, 246.007, 131.402, 119.573, 165.469, 135.786, 119.972, 216.941, 132.719, 177.9, 120.729, 154.64 ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 996.537, 771.873, 1074.093, 822.136, 783.954, 806.359, 1478.16, 676.759, 1060.083, 1081.501, 843.08, 767.256, 1233.84, 1413.706, 939.556, 736.568, 770.839, 816.888, 701.236, 854.303, 827.275, 800.216, 795.069, 1387.006, 837.804, 773.585, 866.14, 1398.775, 798.287, 978.886, 808.27, 1062.61, 800.081, 782.48, 853.548, 791.338, 858.029, 843.376, 1164.108, 760.522, 972.974, 735.647, 999.554, 816.023, 899.49, 805.779, 1312.308, 790.759, 785.98, 775.774, 737.096, 728.781, 944.173, 888.522, 760.451, 828.194, 756.897, 1255.852, 964.065, 741.273, 757.441, 790.252, 802.284, 904.297, 714.827, 880.778, 1109.8, 749.789, 728.817, 684.977, 978.104, 734.222, 764.002 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ 80.48, 67.88, 90.76, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  );
+
+  charts.push(firstChart);
+  makeLegend(new Set(datasetSets["(all configs)"]));
+
+  
+    charts.push(newLineChart(
+      "frequency-chart-clk",
+      "picosoc: clk actual frequency",
+      "MHz",
+      labels,
+      [
+        
+          {
+            data: [ 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062, 84.062 ],
+            label: "basys3-vivado",
+            borderColor: "#00c91e",
+            fill: false
+          },
+        
+          {
+            data: [ 60.619, 60.619, 60.619, 63.904, 63.904, 63.904, 63.904, 63.904, 63.904, 63.904, 63.904, 63.904, 65.337, 65.337, 65.337, 63.372, 63.372, 63.372, 63.372, 63.372, 63.372, 63.372, 63.372, 63.372, 63.357, 63.357, 63.357, 65.705, 65.705, 65.705, 65.705, 65.705, 65.705, 65.705, 65.705, 65.705, 65.705, 65.705, 65.705, 65.705, 63.788, 63.788, 63.788, 63.788, 63.788, 61.486, 61.486, 61.486, 63.941, 63.941, 63.941, 58.323, 58.323, 58.323, 58.323, 58.323, 58.323, 58.323, 58.323, 58.323, 58.323, 58.323, 58.323, 64.998, 64.998, 64.998, 64.998, 62.137, 62.137, 62.137, 62.137, 62.137, 62.137 ],
+            label: "basys3-vpr",
+            borderColor: "#07caff",
+            fill: false
+          },
+        
+          {
+            data: [ 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69, 72.69 ],
+            label: "basys3-yosys-vivado",
+            borderColor: "#4bffc1",
+            fill: false
+          },
+        
+          {
+            data: [ 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07, 71.07 ],
+            label: "basys3-nextpnr-xilinx",
+            borderColor: "#ff1291",
+            fill: false
+          },
+        
+          {
+            data: [ 60.953, 60.953, 60.953, 61.977, 61.977, 61.977, 61.977, 61.977, 61.977, 61.977, 61.977, 61.977, 65.028, 65.028, 65.028, 65.202, 65.202, 65.202, 65.202, 65.202, 65.202, 65.202, 65.202, 65.202, 63.674, 63.674, 63.674, 65.924, 65.924, 65.924, 65.924, 65.924, 65.924, 65.924, 65.924, 65.924, 65.924, 65.924, 65.924, 65.924, 64.943, 64.943, 64.943, 64.943, 64.943, 62.531, 62.531, 62.531, 64.99, 64.99, 64.99, 58.962, 58.962, 58.962, 58.962, 58.962, 58.962, 58.962, 58.962, 58.962, 58.962, 58.962, 58.962, 67.083, 67.083, 67.083, 67.083, 62.992, 62.992, 62.992, 62.992, 62.992, 62.992 ],
+            label: "basys3-vpr-fasm2bels",
+            borderColor: "#05ffb1",
+            fill: false
+          },
+        
+          {
+            data: [ 187.266, 187.266, 187.266, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "basys3-yosys-vivado-uhdm",
+            borderColor: "#00c3a3",
+            fill: false
+          },
+        
+      ],
+      false
+    ));
+  
+
+  charts.push(newLineChart(
+    "LUT-chart",
+    "picosoc: total LUT count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777, 2777 ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298, 3298 ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741, 3741 ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094, 4094 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ 80, 80, 80, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "DFF-chart",
+    "picosoc: total DFF count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387, 1387 ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420, 1420 ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404 ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404, 1404 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ 54, 54, 54, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "CARRY-chart",
+    "picosoc: total CARRY count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184, 184 ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223 ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ 14, 14, 14, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "IOB-chart",
+    "picosoc: total IOB count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35 ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35 ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35 ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ 18, 18, 18, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "BRAM-chart",
+    "picosoc: total BRAM count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0 ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "PLL-chart",
+    "picosoc: total PLL count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ 0, 0, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+  charts.push(newLineChart(
+    "GLB-chart",
+    "picosoc: total GLB count",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+
+  charts.push(newLineChart(
+    "wirelength-chart",
+    "picosoc: wirelength",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 256759, 256759, 256759, 265699, 265699, 265699, 265699, 265699, 265699, 265699, 265699, 265699, 254839, 254839, 254839, 253521, 253521, 253521, 253521, 253521, 253521, 253521, 253521, 253521, 252442, 252442, 252442, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 247912, 247912, 247912, 247912, 247912, 260945, 260945, 260945, 263829, 263829, 263829, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 256060, 256060, 256060, 256060, 249315, 249315, 249315, 249315, 249315, 249315 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902, 68902 ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 256759, 256759, 256759, 265699, 265699, 265699, 265699, 265699, 265699, 265699, 265699, 265699, 254839, 254839, 254839, 253521, 253521, 253521, 253521, 253521, 253521, 253521, 253521, 253521, 252442, 252442, 252442, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 258167, 247912, 247912, 247912, 247912, 247912, 260945, 260945, 260945, 263829, 263829, 263829, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 254612, 256060, 256060, 256060, 256060, 249315, 249315, 249315, 249315, 249315, 249315 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+
+  charts.push(newLineChart(
+    "memory-usage-chart",
+    "picosoc: maximum memory usage",
+    "",
+    labels,
+    
+    [
+            {
+                data: [ 2281.71443939209, 2281.7249298095703, 2281.7182540893555, 2282.6642990112305, 2282.6757431030273, 2282.660484313965, 2282.6757431030273, 2282.660484313965, 2281.710624694824, 2281.6991806030273, 2282.6719284057617, 2281.702995300293, 2280.764579772949, 2282.656669616699, 2281.7182540893555, 2283.6179733276367, 2282.6719284057617, 2282.660484313965, 2282.6642990112305, 2282.6719284057617, 2281.7182540893555, 2281.710624694824, 2281.378746032715, 2280.756950378418, 2281.736373901367, 2282.6719284057617, 2281.7182540893555, 2282.6719284057617, 2281.722068786621, 2283.6179733276367, 2282.6786041259766, 2282.6719284057617, 2283.625602722168, 2281.710624694824, 2282.6757431030273, 2281.3711166381836, 2281.7182540893555, 2281.378746032715, 2281.722068786621, 2283.6217880249023, 2281.71443939209, 2280.756950378418, 2282.668113708496, 2282.668113708496, 2282.668113708496, 2283.614158630371, 2282.6719284057617, 2283.625602722168, 2283.632278442383, 2283.1411361694336, 2281.710624694824, 2282.6786041259766, 2282.668113708496, 2283.297538757324, 2281.3711166381836, 2283.275604248047, 2282.6719284057617, 2282.668113708496, 2280.768394470215, 2281.7182540893555, 2282.6719284057617, 2282.6757431030273, 2282.656669616699, 2282.6786041259766, 2281.7182540893555, 2283.2860946655273, 2281.7182540893555, 2282.668113708496, 2282.6757431030273, 2282.6719284057617, 2282.6757431030273, 2281.710624694824, 2282.6719284057617 ],
+                label: "basys3-vivado" ,
+                borderColor: "#00c91e",
+                fill: false
+            },
+            {
+                data: [ 4012.5, 4012.4, 4012.5, 4014.4, 4014.3, 4014.2, 4014.4, 4014.5, 4014.2, 4014.4, 4014.3, 4014.3, 4014.6, 4014.7, 4014.5, 4013.9, 4014.2, 4014.0, 4014.1, 4014.2, 4014.2, 4014.0, 4014.1, 4014.2, 4013.5, 4013.4, 4013.5, 4013.9, 4013.9, 4013.8, 4013.9, 4014.1, 4014.1, 4013.9, 4014.1, 4013.9, 4013.8, 4013.9, 4013.9, 4014.2, 4014.3, 4014.1, 4014.3, 4014.2, 4014.4, 4014.1, 4014.2, 4014.0, 4013.8, 4013.9, 4014.0, 4014.6, 4014.6, 4014.6, 4014.5, 4014.4, 4014.6, 4014.6, 4014.7, 4014.5, 4014.6, 4014.7, 4014.4, 4014.2, 4014.0, 4014.1, 4014.2, 4014.1, 4014.0, 4014.2, 4014.1, 4014.1, 4014.1 ],
+                label: "basys3-vpr" ,
+                borderColor: "#07caff",
+                fill: false
+            },
+            {
+                data: [ 2296.8578338623047, 2296.8578338623047, 2297.863006591797, 2296.854019165039, 2296.865463256836, 2295.8927154541016, 2297.8334426879883, 2296.8578338623047, 2295.926094055176, 2298.4962463378906, 2296.6041564941406, 2295.654296875, 2295.9184646606445, 2295.926094055176, 2295.9184646606445, 2295.9041595458984, 2296.8873977661133, 2295.9117889404297, 2295.914649963379, 2297.8296279907227, 2296.8578338623047, 2296.586036682129, 2296.8578338623047, 2297.8153228759766, 2295.8927154541016, 2295.900344848633, 2296.8578338623047, 2295.9117889404297, 2296.5927124023438, 2295.907974243164, 2296.8502044677734, 2295.914649963379, 2295.900344848633, 2295.907974243164, 2295.907974243164, 2294.9609756469727, 2296.868324279785, 2296.854019165039, 2295.9184646606445, 2296.8502044677734, 2296.8950271606445, 2295.888900756836, 2296.854019165039, 2296.8616485595703, 2296.6079711914062, 2295.9184646606445, 2296.588897705078, 2294.950485229492, 2296.5927124023438, 2296.865463256836, 2295.9041595458984, 2294.0006256103516, 2296.8616485595703, 2296.6156005859375, 2296.586036682129, 2294.950485229492, 2294.9838638305664, 2295.914649963379, 2295.900344848633, 2295.914649963379, 2296.879768371582, 2295.907974243164, 2294.976234436035, 2295.92227935791, 2296.8502044677734, 2295.9117889404297, 2295.9041595458984, 2295.9184646606445, 2296.872138977051, 2294.9647903442383, 2296.8835830688477, 2297.557830810547, 2295.896530151367 ],
+                label: "basys3-yosys-vivado" ,
+                borderColor: "#4bffc1",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-nextpnr-xilinx" ,
+                borderColor: "#ff1291",
+                fill: false
+            },
+            {
+                data: [ 4012.4, 4012.5, 4012.5, 4014.3, 4014.5, 4014.4, 4014.4, 4014.5, 4014.4, 4014.3, 4014.5, 4014.4, 4014.5, 4014.6, 4014.6, 4014.1, 4014.2, 4014.2, 4014.1, 4014.1, 4014.2, 4014.2, 4014.1, 4014.0, 4013.5, 4013.5, 4013.4, 4014.0, 4013.8, 4013.9, 4014.1, 4013.9, 4014.0, 4013.8, 4014.1, 4014.1, 4013.8, 4013.7, 4014.0, 4013.9, 4014.4, 4014.5, 4014.3, 4014.2, 4014.3, 4014.3, 4014.1, 4014.2, 4013.9, 4013.9, 4014.0, 4014.7, 4014.5, 4014.6, 4014.5, 4014.4, 4014.5, 4014.5, 4014.5, 4014.5, 4014.6, 4014.6, 4014.4, 4014.2, 4014.2, 4014.2, 4014.1, 4014.0, 4014.1, 4014.1, 4014.2, 4014.2, 4014.2 ],
+                label: "basys3-vpr-fasm2bels" ,
+                borderColor: "#05ffb1",
+                fill: false
+            },
+            {
+                data: [ 2228.0960083007812, 2228.1036376953125, 2227.142333984375, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "basys3-yosys-vivado-uhdm" ,
+                borderColor: "#00c3a3",
+                fill: false
+            },
+    ] ,
+    false
+  ));
+
+  </script>
+</body>
+</html>
