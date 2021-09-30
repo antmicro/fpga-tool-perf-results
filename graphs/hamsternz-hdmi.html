@@ -100,10 +100,13 @@
 
   <canvas id="runtime-chart" width="300" height="150"></canvas>
   
-    <canvas id="frequency-chart-sys_clk_pin", width="300" height="150">
+    <canvas id="frequency-chart-clk_pixel_raw", width="300" height="150">
     </canvas>
   
-    <canvas id="frequency-chart-clk_pixel_raw", width="300" height="150">
+    <canvas id="frequency-chart-clk", width="300" height="150">
+    </canvas>
+  
+    <canvas id="frequency-chart-sys_clk_pin", width="300" height="150">
     </canvas>
   
   <div id="resource-graphs">
@@ -135,7 +138,7 @@
   <script>
 
   let charts = [];
-  let labels = [ "2021-08-20 03:35:53", "2021-08-20 08:58:18", "2021-08-20 16:45:27", "2021-08-20 21:30:49", "2021-08-21 03:18:45", "2021-08-21 08:53:14", "2021-08-21 16:26:04", "2021-08-21 21:35:29", "2021-08-22 05:12:05", "2021-08-22 11:06:20", "2021-08-22 15:29:39", "2021-08-22 20:09:11", "2021-08-23 02:49:12", "2021-08-23 09:42:26", "2021-08-23 16:32:13", "2021-08-23 21:14:14", "2021-08-24 04:23:19", "2021-08-24 11:22:15", "2021-08-24 14:44:32", "2021-08-24 23:05:39", "2021-08-25 03:30:39", "2021-08-25 10:35:38", "2021-08-25 16:23:34", "2021-08-25 21:31:26", "2021-08-26 04:07:38", "2021-08-26 12:39:27", "2021-08-26 16:17:41", "2021-08-26 22:57:53", "2021-08-27 05:28:13", "2021-08-27 09:19:57", "2021-08-27 16:31:26", "2021-08-27 22:07:39", "2021-08-28 04:55:43", "2021-08-28 11:31:12", "2021-08-28 18:09:16", "2021-08-28 19:36:58", "2021-08-29 05:22:47", "2021-08-29 10:40:46", "2021-08-29 18:40:54", "2021-08-29 21:40:24", "2021-08-30 04:16:29", "2021-08-30 11:31:11", "2021-08-30 15:28:26", "2021-08-30 23:03:23", "2021-08-31 05:17:23", "2021-08-31 10:30:17", "2021-08-31 15:34:47", "2021-08-31 22:04:56", "2021-09-01 04:20:20", "2021-09-01 10:22:47", "2021-09-01 15:20:19", "2021-09-01 20:15:38", "2021-09-02 03:16:18", "2021-09-02 10:53:53", "2021-09-02 20:57:25", "2021-09-03 04:27:49", "2021-09-03 10:04:29", "2021-09-03 16:34:46", "2021-09-04 00:41:47", "2021-09-04 04:06:21", "2021-09-04 08:47:45", "2021-09-04 17:43:10", "2021-09-05 00:08:21", "2021-09-05 05:01:57", "2021-09-05 08:07:44", "2021-09-05 18:32:15", "2021-09-05 23:27:34", "2021-09-06 02:44:38", "2021-09-06 11:40:57", "2021-09-06 17:52:15", "2021-09-06 23:44:14", "2021-09-07 04:42:02", "2021-09-07 10:49:46" ];
+  let labels = [ "2021-08-20 03:35:53", "2021-08-20 08:58:18", "2021-08-20 16:45:27", "2021-08-20 21:30:49", "2021-08-21 03:18:45", "2021-08-21 08:53:14", "2021-08-21 16:26:04", "2021-08-21 21:35:29", "2021-08-22 05:12:05", "2021-08-22 11:06:20", "2021-08-22 15:29:39", "2021-08-22 20:09:11", "2021-08-23 02:49:12", "2021-08-23 09:42:26", "2021-08-23 16:32:13", "2021-08-23 21:14:14", "2021-08-24 04:23:19", "2021-08-24 11:22:15", "2021-08-24 14:44:32", "2021-08-24 23:05:39", "2021-08-25 03:30:39", "2021-08-25 10:35:38", "2021-08-25 16:23:34", "2021-08-25 21:31:26", "2021-08-26 04:07:38", "2021-08-26 12:39:27", "2021-08-26 16:17:41", "2021-08-26 22:57:53", "2021-08-27 05:28:13", "2021-08-27 09:19:57", "2021-08-27 16:31:26", "2021-08-27 22:07:39", "2021-08-28 04:55:43", "2021-08-28 11:31:12", "2021-08-28 18:09:16", "2021-08-28 19:36:58", "2021-08-29 05:22:47", "2021-08-29 10:40:46", "2021-08-29 18:40:54", "2021-08-29 21:40:24", "2021-08-30 04:16:29", "2021-08-30 11:31:11", "2021-08-30 15:28:26", "2021-08-30 23:03:23", "2021-08-31 05:17:23", "2021-08-31 10:30:17", "2021-08-31 15:34:47", "2021-08-31 22:04:56", "2021-09-01 04:20:20", "2021-09-01 10:22:47", "2021-09-01 15:20:19", "2021-09-01 20:15:38", "2021-09-02 03:16:18", "2021-09-02 10:53:53", "2021-09-02 20:57:25", "2021-09-03 04:27:49", "2021-09-03 10:04:29", "2021-09-03 16:34:46", "2021-09-04 00:41:47", "2021-09-04 04:06:21", "2021-09-04 08:47:45", "2021-09-04 17:43:10", "2021-09-05 00:08:21", "2021-09-05 05:01:57", "2021-09-05 08:07:44", "2021-09-05 18:32:15", "2021-09-05 23:27:34", "2021-09-06 02:44:38", "2021-09-06 11:40:57", "2021-09-06 17:52:15", "2021-09-06 23:44:14", "2021-09-07 04:42:02", "2021-09-07 10:49:46", "2021-09-07 15:19:49", "2021-09-07 21:17:12", "2021-09-08 03:27:08", "2021-09-08 20:53:57", "2021-09-09 04:22:07", "2021-09-09 09:46:05", "2021-09-09 15:26:20", "2021-09-09 21:29:41", "2021-09-10 04:54:56", "2021-09-10 14:43:32", "2021-09-10 22:21:40", "2021-09-11 03:47:09", "2021-09-11 11:45:36", "2021-09-11 16:05:24", "2021-09-11 21:03:15", "2021-09-12 10:55:54", "2021-09-12 23:22:01", "2021-09-13 02:33:54", "2021-09-13 10:43:24", "2021-09-13 15:30:35", "2021-09-13 17:47:08", "2021-09-14 00:01:33", "2021-09-14 05:58:49", "2021-09-14 13:11:26", "2021-09-14 19:57:09", "2021-09-15 00:32:04", "2021-09-15 05:46:56", "2021-09-15 12:48:49", "2021-09-15 18:25:06", "2021-09-16 00:38:50", "2021-09-16 08:11:39", "2021-09-16 13:22:28", "2021-09-16 18:38:02", "2021-09-17 00:56:02", "2021-09-17 07:29:00", "2021-09-17 12:46:18", "2021-09-17 17:45:55", "2021-09-18 00:13:16", "2021-09-18 06:31:19", "2021-09-18 12:32:42", "2021-09-18 19:51:29", "2021-09-19 01:24:45", "2021-09-19 06:19:19", "2021-09-19 12:22:43", "2021-09-19 19:49:17", "2021-09-20 01:51:22", "2021-09-20 02:06:08", "2021-09-20 06:24:07", "2021-09-20 13:11:21", "2021-09-20 18:44:33", "2021-09-21 01:49:14", "2021-09-21 06:31:27", "2021-09-21 12:50:41", "2021-09-21 18:37:42", "2021-09-22 00:37:11", "2021-09-22 08:07:05", "2021-09-22 13:54:32", "2021-09-22 18:06:12", "2021-09-23 01:04:21", "2021-09-23 07:33:36", "2021-09-23 12:32:29", "2021-09-23 18:10:54", "2021-09-24 00:30:41", "2021-09-24 07:37:03", "2021-09-24 11:29:36", "2021-09-24 18:17:56", "2021-09-25 00:25:14", "2021-09-25 08:01:27", "2021-09-25 12:09:49", "2021-09-25 17:32:34", "2021-09-26 01:30:50", "2021-09-26 07:35:26", "2021-09-26 12:41:07", "2021-09-26 19:21:53", "2021-09-27 01:41:24", "2021-09-27 05:59:24", "2021-09-27 11:36:08", "2021-09-28 00:47:38", "2021-09-28 07:43:44", "2021-09-28 12:12:46", "2021-09-28 18:33:09", "2021-09-29 00:55:10", "2021-09-29 06:22:23", "2021-09-29 12:22:32", "2021-09-30 07:46:33" ];
 
   let firstChart = null;
 
@@ -144,12 +147,36 @@
   
     datasetSets["nexys-video"] = [
       
+        "nexys-video-nextpnr-xilinx-fasm2bels",
+      
+        "nexys-video-vpr",
+      
+        "nexys-video-yosys-vivado-uhdm",
+      
+        "nexys-video-nextpnr-xilinx",
+      
+        "nexys-video-vpr-fasm2bels",
+      
+        "nexys-video-yosys-vivado",
+      
         "nexys-video-vivado",
       
     ];
     datasetSetsIndices.push("nexys-video");
   
     datasetSets["(all configs)"] = [
+      
+        "nexys-video-nextpnr-xilinx-fasm2bels",
+      
+        "nexys-video-vpr",
+      
+        "nexys-video-yosys-vivado-uhdm",
+      
+        "nexys-video-nextpnr-xilinx",
+      
+        "nexys-video-vpr-fasm2bels",
+      
+        "nexys-video-yosys-vivado",
       
         "nexys-video-vivado",
       
@@ -313,9 +340,45 @@
     
     [
             {
-                data: [ 497.706, 353.269, 680.092, 645.09, 551.659, 377.797, 586.922, 583.833, 553.26, 615.788, 573.387, 604.622, 859.359, 738.665, 541.188, 359.797, 486.572, 648.07, 631.755, 937.593, 688.034, 640.687, 380.253, 648.985, 505.3, 618.567, 735.735, 692.922, 461.789, 579.81, 720.354, 751.148, 908.513, 506.704, 576.315, 362.958, 631.922, 624.385, 820.378, 480.351, 548.704, 604.787, 577.334, 492.881, 560.292, 675.012, 603.255, 612.293, 839.426, 577.408, 485.103, 356.875, 573.929, 532.638, 492.944, 614.684, 546.317, 667.512, 748.796, 364.89, 510.03, 1028.331, 554.183, 342.34, 380.301, 596.186, 496.202, 548.664, 654.25, 561.099, 516.788, 378.402, 368.625 ],
+                data: [ 497.706, 353.269, 680.092, 645.09, 551.659, 377.797, 586.922, 583.833, 553.26, 615.788, 573.387, 604.622, 859.359, 738.665, 541.188, 359.797, 486.572, 648.07, 631.755, 937.593, 688.034, 640.687, 380.253, 648.985, 505.3, 618.567, 735.735, 692.922, 461.789, 579.81, 720.354, 751.148, 908.513, 506.704, 576.315, 362.958, 631.922, 624.385, 820.378, 480.351, 548.704, 604.787, 577.334, 492.881, 560.292, 675.012, 603.255, 612.293, 839.426, 577.408, 485.103, 356.875, 573.929, 532.638, 492.944, 614.684, 546.317, 667.512, 748.796, 364.89, 510.03, 1028.331, 554.183, 342.34, 380.301, 596.186, 496.202, 548.664, 654.25, 561.099, 516.788, 378.402, 368.625, 382.926, 493.288, 663.187, 547.093, 668.574, 641.9, 701.751, 537.264, 586.882, 464.762, 624.358, 362.73, 572.756, 634.439, 497.55, 567.15, 723.349, 333.184, 798.528, 621.713, 511.175, 502.689, 576.958, 629.093, 823.721, 593.799, 347.49, 479.117, 532.613, 519.845, 560.813, 625.107, 479.623, 511.631, 613.066, 463.02, 394.963, 646.895, 483.049, 497.971, 666.438, 694.988, 605.516, 570.693, 556.746, 920.018, 502.835, 467.02, 519.171, 518.011, 714.821, 610.661, 774.143, 718.085, 548.06, 740.1, 647.518, 523.015, 482.409, 688.547, 491.08, 483.314, 519.749, 918.737, 356.967, 624.21, 536.935, 674.647, 528.247, 354.169, 641.463, 892.241, 842.973, 655.592, 864.016, 612.478, 383.822, 480.35, 700.578, 532.663, 538.618, 515.032, 475.383, 464.803, 751.518 ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -327,16 +390,58 @@
 
   
     charts.push(newLineChart(
-      "frequency-chart-sys_clk_pin",
-      "hamsternz-hdmi: sys_clk_pin actual frequency",
+      "frequency-chart-clk_pixel_raw",
+      "hamsternz-hdmi: clk_pixel_raw actual frequency",
       "MHz",
       labels,
       [
         
           {
-            data: [ 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391 ],
+            data: [ 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857 ],
             label: "nexys-video-vivado",
             borderColor: "#50ff02",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-nextpnr-xilinx-fasm2bels",
+            borderColor: "#ffff3d",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-vpr-fasm2bels",
+            borderColor: "#0600ac",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-yosys-vivado-uhdm",
+            borderColor: "#6c00f5",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-vpr",
+            borderColor: "#00cbce",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-yosys-vivado",
+            borderColor: "#ff2822",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-nextpnr-xilinx",
+            borderColor: "#00c5b8",
             fill: false
           },
         
@@ -345,16 +450,118 @@
     ));
   
     charts.push(newLineChart(
-      "frequency-chart-clk_pixel_raw",
-      "hamsternz-hdmi: clk_pixel_raw actual frequency",
+      "frequency-chart-clk",
+      "hamsternz-hdmi: clk actual frequency",
       "MHz",
       labels,
       [
         
           {
-            data: [ 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857, 142.857 ],
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
             label: "nexys-video-vivado",
             borderColor: "#50ff02",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-nextpnr-xilinx-fasm2bels",
+            borderColor: "#ffff3d",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-vpr-fasm2bels",
+            borderColor: "#0600ac",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-yosys-vivado-uhdm",
+            borderColor: "#6c00f5",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-vpr",
+            borderColor: "#00cbce",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-yosys-vivado",
+            borderColor: "#ff2822",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-nextpnr-xilinx",
+            borderColor: "#00c5b8",
+            fill: false
+          },
+        
+      ],
+      false
+    ));
+  
+    charts.push(newLineChart(
+      "frequency-chart-sys_clk_pin",
+      "hamsternz-hdmi: sys_clk_pin actual frequency",
+      "MHz",
+      labels,
+      [
+        
+          {
+            data: [ 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391, 134.391 ],
+            label: "nexys-video-vivado",
+            borderColor: "#50ff02",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-nextpnr-xilinx-fasm2bels",
+            borderColor: "#ffff3d",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-vpr-fasm2bels",
+            borderColor: "#0600ac",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-yosys-vivado-uhdm",
+            borderColor: "#6c00f5",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-vpr",
+            borderColor: "#00cbce",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-yosys-vivado",
+            borderColor: "#ff2822",
+            fill: false
+          },
+        
+          {
+            data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+            label: "nexys-video-nextpnr-xilinx",
+            borderColor: "#00c5b8",
             fill: false
           },
         
@@ -371,9 +578,45 @@
     
     [
             {
-                data: [ 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518 ],
+                data: [ 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518, 2518 ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -387,9 +630,45 @@
     
     [
             {
-                data: [ 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895 ],
+                data: [ 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895, 1895 ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -403,9 +682,45 @@
     
     [
             {
-                data: [ 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252 ],
+                data: [ 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252, 252 ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -419,9 +734,45 @@
     
     [
             {
-                data: [ 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34 ],
+                data: [ 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34 ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -435,9 +786,45 @@
     
     [
             {
-                data: [ 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0 ],
+                data: [ 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0, 11.0 ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -451,9 +838,45 @@
     
     [
             {
-                data: [ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
+                data: [ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -467,9 +890,45 @@
     
     [
             {
-                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -484,9 +943,45 @@
     
     [
             {
-                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
@@ -501,9 +996,45 @@
     
     [
             {
-                data: [ 2576.239585876465, 2576.261520385742, 2578.1726837158203, 2578.176498413086, 2577.2228240966797, 2577.204704284668, 2577.1894454956055, 2575.3040313720703, 2574.3207931518555, 2578.1354904174805, 2575.2668380737305, 2577.193260192871, 2575.29354095459, 2575.2859115600586, 2577.2228240966797, 2579.0815353393555, 2575.3040313720703, 2578.1431198120117, 2577.238082885742, 2577.2008895874023, 2576.216697692871, 2579.1006088256836, 2578.139305114746, 2575.315475463867, 2577.2008895874023, 2576.2434005737305, 2575.2859115600586, 2575.289726257324, 2576.272964477539, 2574.350357055664, 2575.315475463867, 2574.3026733398438, 2574.343681335449, 2575.2782821655273, 2577.181816101074, 2576.2319564819336, 2573.4004974365234, 2577.1970748901367, 2580.0352096557617, 2574.369430541992, 2575.3040313720703, 2575.2782821655273, 2574.3398666381836, 2577.211380004883, 2577.1970748901367, 2576.261520385742, 2575.3002166748047, 2577.18563079834, 2576.2510299682617, 2575.29354095459, 2576.247215270996, 2571.44832611084, 2576.2510299682617, 2577.193260192871, 2576.265335083008, 2575.289726257324, 2576.2243270874023, 2578.1612396240234, 2576.265335083008, 2577.181816101074, 2575.3040313720703, 2577.207565307617, 2576.2243270874023, 2576.216697692871, 2576.2243270874023, 2576.247215270996, 2577.1970748901367, 2577.18563079834, 2575.2973556518555, 2576.235771179199, 2578.1726837158203, 2574.343681335449, 2580.0580978393555 ],
+                data: [ 2576.239585876465, 2576.261520385742, 2578.1726837158203, 2578.176498413086, 2577.2228240966797, 2577.204704284668, 2577.1894454956055, 2575.3040313720703, 2574.3207931518555, 2578.1354904174805, 2575.2668380737305, 2577.193260192871, 2575.29354095459, 2575.2859115600586, 2577.2228240966797, 2579.0815353393555, 2575.3040313720703, 2578.1431198120117, 2577.238082885742, 2577.2008895874023, 2576.216697692871, 2579.1006088256836, 2578.139305114746, 2575.315475463867, 2577.2008895874023, 2576.2434005737305, 2575.2859115600586, 2575.289726257324, 2576.272964477539, 2574.350357055664, 2575.315475463867, 2574.3026733398438, 2574.343681335449, 2575.2782821655273, 2577.181816101074, 2576.2319564819336, 2573.4004974365234, 2577.1970748901367, 2580.0352096557617, 2574.369430541992, 2575.3040313720703, 2575.2782821655273, 2574.3398666381836, 2577.211380004883, 2577.1970748901367, 2576.261520385742, 2575.3002166748047, 2577.18563079834, 2576.2510299682617, 2575.29354095459, 2576.247215270996, 2571.44832611084, 2576.2510299682617, 2577.193260192871, 2576.265335083008, 2575.289726257324, 2576.2243270874023, 2578.1612396240234, 2576.265335083008, 2577.181816101074, 2575.3040313720703, 2577.207565307617, 2576.2243270874023, 2576.216697692871, 2576.2243270874023, 2576.247215270996, 2577.1970748901367, 2577.18563079834, 2575.2973556518555, 2576.235771179199, 2578.1726837158203, 2574.343681335449, 2580.0580978393555, 2576.2243270874023, 2574.336051940918, 2575.270652770996, 2577.1970748901367, 2576.2691497802734, 2579.141616821289, 2576.2510299682617, 2573.378562927246, 2576.253890991211, 2576.2434005737305, 2574.369430541992, 2576.239585876465, 2576.228141784668, 2578.139305114746, 2575.2782821655273, 2575.29354095459, 2576.216697692871, 2578.1431198120117, 2576.2577056884766, 2576.2319564819336, 2575.2782821655273, 2576.2434005737305, 2575.3002166748047, 2579.133987426758, 2576.2243270874023, 2577.1894454956055, 2578.1545639038086, 2577.1894454956055, 2576.2510299682617, 2576.2434005737305, 2575.2973556518555, 2575.2973556518555, 2577.18563079834, 2576.253890991211, 2577.2008895874023, 2577.181816101074, 2579.07772064209, 2575.3116607666016, 2576.2205123901367, 2576.2319564819336, 2576.2805938720703, 2571.478843688965, 2575.2859115600586, 2575.326919555664, 2577.181816101074, 2576.261520385742, 2579.108238220215, 2576.235771179199, 2578.1917572021484, 2575.2782821655273, 2574.3322372436523, 2578.184127807617, 2574.336051940918, 2577.204704284668, 2575.289726257324, 2575.307846069336, 2577.193260192871, 2580.0657272338867, 2575.3345489501953, 2575.270652770996, 2576.235771179199, 2577.211380004883, 2579.1187286376953, 2577.18563079834, 2577.181816101074, 2577.230453491211, 2577.2151947021484, 2576.2510299682617, 2577.2008895874023, 2578.1688690185547, 2576.265335083008, 2578.184127807617, 2575.289726257324, 2575.2973556518555, 2577.2266387939453, 2573.390007019043, 2575.319290161133, 2576.235771179199, 2578.1726837158203, 2574.3579864501953, 2577.174186706543, 2577.204704284668, 2579.141616821289, 2577.219009399414, 2575.289726257324 ],
                 label: "nexys-video-vivado" ,
                 borderColor: "#50ff02",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx-fasm2bels" ,
+                borderColor: "#ffff3d",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr-fasm2bels" ,
+                borderColor: "#0600ac",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado-uhdm" ,
+                borderColor: "#6c00f5",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-vpr" ,
+                borderColor: "#00cbce",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-yosys-vivado" ,
+                borderColor: "#ff2822",
+                fill: false
+            },
+            {
+                data: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ],
+                label: "nexys-video-nextpnr-xilinx" ,
+                borderColor: "#00c5b8",
                 fill: false
             },
     ] ,
